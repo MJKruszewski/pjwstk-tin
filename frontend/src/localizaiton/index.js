@@ -1,4 +1,4 @@
-import messagesPL from './pl.json'
+import messagesPL from './pl'
 
 export default {
   pl: messagesPL

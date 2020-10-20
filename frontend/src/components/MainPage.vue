@@ -1,31 +1,31 @@
 <template>
-  <div class="col-12 container-background rounded-full">
+  <div class="col-12 container-background rounded-full" style="padding-top: 0">
     <div class="col-12">
       <h2>{{ $t('welcome') }}, {{ this.$store.state.user.name + " " + this.$store.state.user.lastName }}</h2>
     </div>
-    <div class="col-3">
+    <div class="col-3 container-background rounded-full">
       <StatsChart :chart-data="datacollection" :options="options"/>
     </div>
-    <div class="col-9">
+    <div class="col-9" style="padding-top: 0;">
       <div class="col-12 container-background rounded-full">
-        <h2 style="padding: 0;margin-top: 0">{{ $t('tasks_log') }}</h2>
+        <h2 style="padding: 0;margin-top: 0">{{ $t('mainPage.tasks_log') }}</h2>
         <table>
           <thead>
           <tr>
             <th>
-              {{ $t('task_code') }}
+              {{ $t('mainPage.task_code') }}
             </th>
             <th>
-              {{ $t('task_status') }}
+              {{ $t('mainPage.task_status') }}
             </th>
             <th>
-              {{ $t('task_priority') }}
+              {{ $t('mainPage.task_priority') }}
             </th>
             <th>
-              {{ $t('task_reporter') }}
+              {{ $t('mainPage.task_reporter') }}
             </th>
             <th>
-              {{ $t('task_actions') }}
+              {{ $t('mainPage.task_actions') }}
             </th>
           </tr>
           </thead>
@@ -45,7 +45,7 @@
                 {{ item.reporter.name }} {{ item.reporter.lastName }}
               </td>
               <td>
-                <button>Process</button>
+                <button class="info">Process</button>
                 <button>Cancel</button>
               </td>
             </tr>
@@ -59,12 +59,12 @@
     </div>
 
 
-
   </div>
 </template>
 
 <script>
     import StatsChart from "./utils/StatsChart";
+    import crewmateTasks from "../mocks/crewmateTasks";
 
     export default {
         name: "MainPage",
@@ -72,19 +72,7 @@
         data() {
             return {
                 datacollection: null,
-                tasks: [
-                    {
-                        id: "testid",
-                        code: 'engineer_task_1',
-                        status: 'todo',
-                        priority: 'high',
-                        reporter: {
-                            id: "id",
-                            name: "Adolf",
-                            lastName: "Bitler"
-                        },
-                    }
-                ],
+                tasks: crewmateTasks,
                 options: {
                     legend: {
                         display: false
@@ -111,7 +99,7 @@
         methods: {
             fillData() {
                 this.datacollection = {
-                    labels: [this.$t('strength'), this.$t('dexterity'), this.$t('intelligence'), this.$t('experience'), this.$t('condition')],
+                    labels: [this.$t('mainPage.strength'), this.$t('mainPage.dexterity'), this.$t('mainPage.intelligence'), this.$t('mainPage.experience'), this.$t('mainPage.condition')],
                     datasets: [
                         {
                             label: this.$t('statistics'),

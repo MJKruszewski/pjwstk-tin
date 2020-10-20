@@ -10,7 +10,7 @@
 
 <style scoped>
   .bg-image {
-    position: absolute;
+    position: fixed;
     background-image: url("../../assets/bg.jpg");
     height: 100%;
     width: 100%;

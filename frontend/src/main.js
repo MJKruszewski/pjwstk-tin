@@ -14,7 +14,7 @@ Vue.config.productionTip = false;
 // Create VueI18n instance with options
 const i18n = new VueI18n({
   locale: 'pl',
-  localization,
+  messages: localization,
 });
 
 const store = new Vuex.Store({

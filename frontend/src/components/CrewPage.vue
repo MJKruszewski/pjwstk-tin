@@ -3,17 +3,22 @@
     <table>
       <thead>
         <tr>
-          <th>{{ $t('crew_name') }}</th>
-          <th>{{ $t('crew_department') }}</th>
-          <th>{{ $t('crew_tasks') }}</th>
-          <th>{{ $t('crew_actions') }}</th>
+          <th>{{ $t('crewPage.crewName') }}</th>
+          <th>{{ $t('crewPage.crewDepartment') }}</th>
+          <th>{{ $t('crewPage.crewTasks') }}</th>
+          <th>{{ $t('crewPage.crewActions') }}</th>
         </tr>
       </thead>
       <tbody>
         <template v-for="mate in crew">
           <tr>
+            <td>{{ mate.name }} {{ mate.lastName }}</td>
+            <td>{{ $t("departments." + mate.department) }}</td>
+            <td>todo</td>
             <td>
-
+              <button class="info">{{ $t('crewPage.details') }}</button>
+              <button class="warning">{{ $t('crewPage.edit') }}</button>
+              <button class="danger">{{ $t('crewPage.remove') }}</button>
             </td>
           </tr>
         </template>
@@ -23,15 +28,13 @@
 </template>
 
 <script>
+    import crewList from "../mocks/crewList";
+
     export default {
         name: "CrewPage",
         data: () => {
             return {
-                crew: [
-                    {
-
-                    }
-                ]
+                crew: crewList
             }
         }
     }

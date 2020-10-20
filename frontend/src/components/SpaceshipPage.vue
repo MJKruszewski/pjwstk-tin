@@ -10,7 +10,9 @@
         <SideMenu/>
       </div>
       <div class="col-10">
-        <router-view/>
+        <transition name="fade">
+          <router-view/>
+        </transition>
       </div>
     </div>
 

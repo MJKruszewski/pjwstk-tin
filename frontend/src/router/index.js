@@ -26,6 +26,11 @@ export default new Router({
           component: MainPage
         },
         {
+          path: '/space-ship/',
+          name: 'summary',
+          component: MainPage
+        },
+        {
           path: '/space-ship/captain-panel',
           name: 'captainPanel',
           component: CaptainPage
