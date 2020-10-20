@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  db:
+    image: mariadb
+    restart: always
+    ports:
+      - 13306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=toor
+      - MYSQL_DATABASE=pjwstk
+      - MYSQL_USER=pjwstk_user
+      - MYSQL_PASSWORD=pjwstk_pass
