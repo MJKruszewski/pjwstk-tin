@@ -8,6 +8,11 @@ export default {
     captainPanel: "Panel kapitański",
     medBay: "Klinika",
     engineersRoom: "Pokój inżynierów",
+    navigationRoom: "Stanowisko pilotów",
+  },
+
+  notFoundPage: {
+    goBack: "Powrót"
   },
 
   navBar: {

@@ -1,5 +1,6 @@
 import messagesPL from './pl'
 
 export default {
-  pl: messagesPL
+  pl: messagesPL,
+  en: {}
 }

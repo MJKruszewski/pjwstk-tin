@@ -5,6 +5,7 @@ import SpaceshipPage from "../components/SpaceshipPage";
 import MainPage from "../components/MainPage";
 import CaptainPage from "../components/CaptainPage";
 import CrewPage from "../components/CrewPage";
+import NotFoundPage from "../components/NotFoundPage";
 
 Vue.use(Router)
 
@@ -14,6 +15,10 @@ export default new Router({
       path: '/',
       name: 'LoginPage',
       component: LoginPage
+    },
+    {
+      path: '*',
+      component: NotFoundPage
     },
     {
       path: '/space-ship',

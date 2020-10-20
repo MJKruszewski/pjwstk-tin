@@ -1,17 +1,23 @@
 <template>
-  <div class="nav">
+  <div class="nav" style="display: table">
+      <div style="text-align: left;padding-top: 5px;padding-left: 10px;display: table-cell">
+        <select v-model="$i18n.locale" id="language">
+          <option value="pl">PL</option>
+          <option value="en">ENG</option>
+        </select>
+      </div>
 
-    <p style="text-align: right;margin-top: 5px;margin-right: 10px">
-      <button class="warning">
-        {{ $t("navBar.logout") }}
-      </button>
-    </p>
+      <div style="text-align: right;padding-top: 5px;padding-right: 10px;display: table-cell">
+        <button class="warning">
+          {{ $t("navBar.logout") }}
+        </button>
+      </div>
   </div>
 </template>
 
 <script>
     export default {
-        name: "NavBar"
+        name: "NavBar",
     }
 </script>
 

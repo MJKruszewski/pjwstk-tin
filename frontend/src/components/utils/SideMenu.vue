@@ -29,13 +29,13 @@
                         title: 'crewList',
                     },
                     {
-                        title: 'med_bay',
+                        title: 'medBay',
                     },
                     {
-                        title: 'engineers_room',
+                        title: 'engineersRoom',
                     },
                     {
-                        title: 'navigation_room',
+                        title: 'navigationRoom',
                     },
                 ],
             }
