@@ -10,6 +10,10 @@ export default {
     engineersRoom: "Pokój inżynierów",
   },
 
+  navBar: {
+    logout: 'Wyloguj'
+  },
+
   mainPage: {
     tasks_log: 'Dziennik zadań',
     task_code: 'Kod zadania',
@@ -18,11 +22,17 @@ export default {
     task_reporter: 'Zgłaszający',
     task_actions: 'Akcje',
 
+    reload: "Odśwież",
+
+    engineer_task_1: 'Cykliczny przegląd',
+
+
     strength: 'Siła',
     dexterity: 'Zręczność',
     intelligence: 'Inteligencja',
     experience: 'Doświadczenie',
     condition: 'Kondycja',
+    stats: 'Statystyki',
   },
 
   departments: {

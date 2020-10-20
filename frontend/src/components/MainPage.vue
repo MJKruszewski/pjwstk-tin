@@ -4,11 +4,19 @@
       <h2>{{ $t('welcome') }}, {{ this.$store.state.user.name + " " + this.$store.state.user.lastName }}</h2>
     </div>
     <div class="col-3 container-background rounded-full">
+      <h2 style="padding: 0;margin-top: 0">{{ $t('mainPage.stats') }}</h2>
       <StatsChart :chart-data="datacollection" :options="options"/>
     </div>
     <div class="col-9" style="padding-top: 0;">
       <div class="col-12 container-background rounded-full">
-        <h2 style="padding: 0;margin-top: 0">{{ $t('mainPage.tasks_log') }}</h2>
+        <h2 style="padding: 0;margin-top: 0">
+          {{ $t('mainPage.tasks_log') }}
+        </h2>
+
+        <button class="info">{{ $t('mainPage.reload') }}</button>
+        <br/>
+        <br/>
+
         <table>
           <thead>
           <tr>
@@ -33,7 +41,7 @@
           <template v-for="item in tasks">
             <tr>
               <td>
-                {{ item.code }}
+                {{ $t("mainPage." + item.code) }}
               </td>
               <td>
                 {{ item.status }}
@@ -53,10 +61,14 @@
           </tbody>
         </table>
       </div>
-      <div class="col-12">
-        <img src="../assets/ship-plan.png"/>
+    </div>
+
+    <div class="col-12">
+      <div class="col-3">
+        <img style="max-width: 100%;display: block" src="../assets/ship-plan.png"/>
       </div>
     </div>
+
 
 
   </div>
@@ -65,10 +77,11 @@
 <script>
     import StatsChart from "./utils/StatsChart";
     import crewmateTasks from "../mocks/crewmateTasks";
+    import RefreshIcon from 'vue-material-design-icons/Refresh.vue';
 
     export default {
         name: "MainPage",
-        components: {StatsChart},
+        components: {StatsChart, RefreshIcon},
         data() {
             return {
                 datacollection: null,

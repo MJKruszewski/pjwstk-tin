@@ -1,6 +1,11 @@
 <template>
   <div class="nav">
-    Nav
+
+    <p style="text-align: right;margin-top: 5px;margin-right: 10px">
+      <button class="warning">
+        {{ $t("navBar.logout") }}
+      </button>
+    </p>
   </div>
 </template>
 
