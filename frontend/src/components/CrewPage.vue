@@ -16,7 +16,7 @@
             <td>{{ $t("departments." + mate.department) }}</td>
             <td>todo</td>
             <td>
-              <button class="info">{{ $t('crewPage.details') }}</button>
+              <button class="info" v-on:click="detailsRedirect(mate.id)" >{{ $t('crewPage.details') }}</button>
               <button class="warning">{{ $t('crewPage.edit') }}</button>
               <button class="danger">{{ $t('crewPage.remove') }}</button>
             </td>
@@ -36,6 +36,11 @@
             return {
                 crew: crewList
             }
+        },
+        methods: {
+            detailsRedirect(id) {
+                this.$router.push({ name: 'crewDetails', params: { id: id } })
+            }
         }
     }
 </script>
@@ -52,7 +57,7 @@
   }
 
   tr:nth-child(even) {
-    background-color: #f2f2f2
+    background-color: rgba(165, 165, 165, 0.41)
   }
 
   th {

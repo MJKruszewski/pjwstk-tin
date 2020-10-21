@@ -19,8 +19,8 @@
           </form>
 
           <div class="col-12" style="text-align: right">
-            <button>Login</button>
             <button>Register</button>
+            <button class="success">Login</button>
           </div>
         </div>
         <div class="col-4"></div>

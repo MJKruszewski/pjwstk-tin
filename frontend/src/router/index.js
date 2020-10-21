@@ -6,6 +6,10 @@ import MainPage from "../components/MainPage";
 import CaptainPage from "../components/CaptainPage";
 import CrewPage from "../components/CrewPage";
 import NotFoundPage from "../components/NotFoundPage";
+import ClinicPage from "../components/ClinicPage";
+import NavigationPage from "../components/NavigationPage";
+import EngineersPage from "../components/EngineersPage";
+import CrewDetailsPage from "../components/CrewDetailsPage";
 
 Vue.use(Router)
 
@@ -44,6 +48,26 @@ export default new Router({
           path: '/space-ship/crew',
           name: 'crewList',
           component: CrewPage
+        },
+        {
+          path: '/space-ship/crew/:id',
+          name: 'crewDetails',
+          component: CrewDetailsPage
+        },
+        {
+          path: '/space-ship/med-bay',
+          name: 'medBay',
+          component: ClinicPage
+        },
+        {
+          path: '/space-ship/engineers-room',
+          name: 'engineersRoom',
+          component: EngineersPage
+        },
+        {
+          path: '/space-ship/navigation-room',
+          name: 'navigationRoom',
+          component: NavigationPage
         },
       ]
     },

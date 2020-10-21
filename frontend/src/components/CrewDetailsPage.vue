@@ -1,8 +1,10 @@
 <template>
   <div class="col-12 container-background rounded-full" style="padding-top: 0">
     <div class="col-12">
-      <h2>{{ $t('welcome') }}, {{ this.$store.state.user.name + " " + this.$store.state.user.lastName }}</h2>
+      <button class="warning" v-on:click="$router.push({ name: 'crewList' })">{{ $t('crewDetails.back') }}</button>
     </div>
+
+
     <div class="col-3 container-background rounded-full">
       <h2 style="padding: 0;margin-top: 0">{{ $t('mainPage.stats') }}</h2>
       <StatsChart :chart-data="datacollection" :options="options"/>
@@ -25,11 +27,12 @@
 <script>
     import StatsChart from "./utils/StatsChart";
     import crewmateTasks from "../mocks/crewmateTasks";
+    import RefreshIcon from 'vue-material-design-icons/Refresh.vue';
     import TaskLog from "./TaskLog";
 
     export default {
-        name: "MainPage",
-        components: {TaskLog, StatsChart},
+        name: "CrewDetailsPage",
+        components: {TaskLog, StatsChart, RefreshIcon},
         data() {
             return {
                 datacollection: null,
@@ -58,6 +61,9 @@
             this.fillData()
         },
         methods: {
+            reloadTasks() {
+                console.log('reloading')
+            },
             fillData() {
                 this.datacollection = {
                     labels: [this.$t('mainPage.strength'), this.$t('mainPage.dexterity'), this.$t('mainPage.intelligence'), this.$t('mainPage.experience'), this.$t('mainPage.condition')],
@@ -81,4 +87,26 @@
 </script>
 
 <style scoped>
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 8px;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2
+  }
+
+  th {
+    background-color: #4a84af;
+    color: white;
+  }
+
+  tr:hover {
+    background-color: rgba(245, 245, 245, 0.21);
+  }
 </style>
