@@ -6,7 +6,7 @@
       <div class="col-2"></div>
       <div class="col-8 container-background rounded-full">
         <div style="text-align: center;">
-          <h1><b>404</b> - Page not found</h1>
+          <h1><b>401</b> - Unauthorized</h1>
           <br/>
           <br/>
           <button class="info">{{ $t('notFoundPage.goBack') }}</button>
@@ -17,9 +17,9 @@
 </template>
 
 <script>
-    import BackgroundImage from "./utils/BackgroundImage";
+    import BackgroundImage from "./../utils/BackgroundImage";
     export default {
-        name: "NotFoundPage",
+        name: "NoPermissionPage",
         components: {BackgroundImage}
     }
 </script>

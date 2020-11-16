@@ -28,9 +28,16 @@ export default {
     task_actions: 'Akcje',
 
     reload: "Odśwież",
+    code: "Kod",
 
     engineer_task_1: 'Cykliczny przegląd',
 
+    stations: "Stanowiska",
+    department: "Dział",
+    departments: "Działy",
+    stationName: "Stanowisko",
+    from: "Od",
+    to: "Do",
 
     strength: 'Siła',
     dexterity: 'Zręczność',
@@ -38,16 +45,25 @@ export default {
     experience: 'Doświadczenie',
     condition: 'Kondycja',
     stats: 'Statystyki',
+    actions: 'Akcje',
+    add: 'Dodaj',
   },
 
   departments: {
     navigation: "Nawigatorzy",
     engineers: "Inżynierowie",
     doc: "Medycy",
-    captain: "Kapitan"
+    captain: "Kapitan",
+    remove: "Usuń",
+  },
+
+  crewDetails: {
+    back: "Powrót",
+    title: "Detale członka załogi: {0}",
   },
 
   crewPage: {
+    title: "Lista załogi",
     crewName: "Załogant",
     crewDepartment: "Dział załoganta",
     crewTasks: "Zadania  załoganta",
@@ -55,5 +71,45 @@ export default {
     details: "Detale",
     edit: "Edytuj",
     remove: "Exterminuj",
+    add: "Dodaj",
+
+    popupRemove: {
+      title: "Czy chcesz dokonać ekterminacji {0}?",
+      description: "Akcja jest nieodwracalna!",
+    }
   },
+
+  popup: {
+    confirm: "Potwierdzam",
+    cancel: "Anuluj"
+  },
+
+  crewAdd: {
+    title: "Dodaj załoganta",
+  },
+
+  captainPage: {
+    title: "Panel kapitański",
+    addStation: "Dodaj stanowisko",
+    editStation: "Edytuj stanowisko",
+    removeStation: "Usuń stanowisko",
+    addDepartment: "Dodaj dział",
+    editDepartment: "Edytuj dział",
+    removeDepartment: "Usuń dział",
+  },
+
+  editCrew: {
+    title: "Edycja członka załogi: {0}",
+    name: 'Imię',
+    lastName: 'Nazwisko',
+    department: 'Dział',
+    strength: 'Siła',
+    dexterity: 'Zręczność',
+    intelligence: 'Inteligencja',
+    experience: 'Doświadczenie',
+    condition: 'Kondycja',
+    save: 'Zapisz',
+    checkOut: 'Wymelduj się',
+  },
+
 }

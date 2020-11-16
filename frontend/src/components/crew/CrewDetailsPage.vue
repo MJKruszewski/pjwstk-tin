@@ -1,6 +1,10 @@
 <template>
   <div class="col-12 container-background rounded-full" style="padding-top: 0">
     <div class="col-12">
+      <h2>{{ $t('crewDetails.title', [this.crewmate.name + " " + this.crewmate.lastName]) }}</h2>
+    </div>
+
+    <div class="col-12 container-background rounded-full" style="margin-bottom: 10px">
       <button class="warning" v-on:click="$router.push({ name: 'crewList' })">{{ $t('crewDetails.back') }}</button>
     </div>
 
@@ -12,10 +16,13 @@
     <div class="col-9" style="padding-top: 0;">
       <TaskLog :tasks="tasks"/>
     </div>
+    <div class="col-9" style="padding-top: 0;">
+      <Stations :stations="crewmate.stations" :user-view="true" />
+    </div>
 
     <div class="col-12">
       <div class="col-3">
-        <img style="max-width: 100%;display: block" src="../assets/ship-plan.png"/>
+        <img style="max-width: 100%;display: block" src="../../assets/ship-plan.png"/>
       </div>
     </div>
 
@@ -25,18 +32,31 @@
 </template>
 
 <script>
-    import StatsChart from "./utils/StatsChart";
-    import crewmateTasks from "../mocks/crewmateTasks";
+    import StatsChart from "./../utils/StatsChart";
+    import crewmateTasks from "../../mocks/crewmateTasks";
+    import crewmate from "../../mocks/crewmate";
     import RefreshIcon from 'vue-material-design-icons/Refresh.vue';
-    import TaskLog from "./TaskLog";
+    import TaskLog from "../tasks/TaskLog";
+    import Stations from "../stations/Stations";
 
     export default {
         name: "CrewDetailsPage",
-        components: {TaskLog, StatsChart, RefreshIcon},
+        components: {Stations, TaskLog, StatsChart, RefreshIcon},
         data() {
             return {
                 datacollection: null,
-                tasks: crewmateTasks,
+                crewmate: {
+                    name: null,
+                    lastName: null,
+                    department: null,
+                    strength: null,
+                    dexterity: null,
+                    intelligence: null,
+                    experience: null,
+                    condition: null,
+                    stations: [],
+                },
+                tasks: null,
                 options: {
                     legend: {
                         display: false
@@ -60,6 +80,10 @@
         mounted() {
             this.fillData()
         },
+        beforeMount() {
+            this.crewmate = crewmate;
+            this.tasks = crewmateTasks;
+        },
         methods: {
             reloadTasks() {
                 console.log('reloading')
@@ -72,11 +96,11 @@
                             label: this.$t('statistics'),
                             backgroundColor: '#f87979',
                             data: [
-                                this.$store.state.user.stats.strength || 0,
-                                this.$store.state.user.stats.dexterity || 0,
-                                this.$store.state.user.stats.intelligence || 0,
-                                this.$store.state.user.stats.experience || 0,
-                                this.$store.state.user.stats.condition || 0,
+                                this.crewmate.strength || 0,
+                                this.crewmate.dexterity || 0,
+                                this.crewmate.intelligence || 0,
+                                this.crewmate.experience || 0,
+                                this.crewmate.condition || 0,
                             ]
                         },
                     ]

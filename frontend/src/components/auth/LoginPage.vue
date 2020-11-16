@@ -20,7 +20,7 @@
 
           <div class="col-12" style="text-align: right">
             <button>Register</button>
-            <button class="success">Login</button>
+            <button class="success" v-on:click="login">Login</button>
           </div>
         </div>
         <div class="col-4"></div>
@@ -29,10 +29,15 @@
 </template>
 
 <script>
-    import BackgroundImage from "./utils/BackgroundImage";
+    import BackgroundImage from "./../utils/BackgroundImage";
     export default {
         name: "LoginPage",
-        components: {BackgroundImage}
+        components: {BackgroundImage},
+        methods: {
+            login() {
+                this.$router.push({name: 'summary'})
+            }
+        }
     }
 </script>
 

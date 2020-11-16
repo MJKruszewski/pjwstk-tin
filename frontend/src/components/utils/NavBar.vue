@@ -1,14 +1,14 @@
 <template>
   <div class="nav" style="display: table">
       <div style="text-align: left;padding-top: 5px;padding-left: 10px;display: table-cell">
-        <select v-model="$i18n.locale" id="language">
+        <select class="small" v-model="$i18n.locale" id="language">
           <option value="pl">PL</option>
           <option value="en">ENG</option>
         </select>
       </div>
 
       <div style="text-align: right;padding-top: 5px;padding-right: 10px;display: table-cell">
-        <button class="warning">
+        <button class="warning" v-on:click="logout">
           {{ $t("navBar.logout") }}
         </button>
       </div>
@@ -18,6 +18,11 @@
 <script>
     export default {
         name: "NavBar",
+        methods: {
+            logout() {
+                this.$router.push({name: 'LoginPage'})
+            }
+        }
     }
 </script>
 

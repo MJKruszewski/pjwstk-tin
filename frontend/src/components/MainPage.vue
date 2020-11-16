@@ -8,12 +8,17 @@
       <StatsChart :chart-data="datacollection" :options="options"/>
     </div>
     <div class="col-9" style="padding-top: 0;">
-      <TaskLog :tasks="tasks"/>
+      <TaskLog :tasks="tasks" :showActions="true"/>
+    </div>
+    <div class="col-3" style="padding-top: 0;"></div>
+    <div class="col-9" style="padding-top: 0;">
+      <Stations :stations="stations" :user-view="true" />
     </div>
 
     <div class="col-12">
       <div class="col-3">
-        <img style="max-width: 100%;display: block" src="../assets/ship-plan.png"/>
+        <img style="max-width: 100%;display: block" src="../assets/ship-plan.png" />
+
       </div>
     </div>
 
@@ -25,33 +30,19 @@
 <script>
     import StatsChart from "./utils/StatsChart";
     import crewmateTasks from "../mocks/crewmateTasks";
-    import TaskLog from "./TaskLog";
+    import chartOptions from "./utils/chartOptions";
+    import Stations from "./stations/Stations";
+    import TaskLog from "./tasks/TaskLog";
 
     export default {
         name: "MainPage",
-        components: {TaskLog, StatsChart},
+        components: {TaskLog, Stations, StatsChart},
         data() {
             return {
                 datacollection: null,
                 tasks: crewmateTasks,
-                options: {
-                    legend: {
-                        display: false
-                    },
-                    scale: {
-                        angleLines: {
-                            display: false
-                        },
-                        ticks: {
-                            callback: function () {
-                                return ""
-                            },
-                            backdropColor: "rgba(0, 0, 0, 0)",
-                            suggestedMin: 0,
-                            suggestedMax: 10
-                        }
-                    }
-                }
+                stations: [],
+                options: chartOptions,
             }
         },
         mounted() {

@@ -1,28 +1,40 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import LoginPage from "../components/LoginPage";
 import SpaceshipPage from "../components/SpaceshipPage";
 import MainPage from "../components/MainPage";
 import CaptainPage from "../components/CaptainPage";
-import CrewPage from "../components/CrewPage";
-import NotFoundPage from "../components/NotFoundPage";
 import ClinicPage from "../components/ClinicPage";
 import NavigationPage from "../components/NavigationPage";
 import EngineersPage from "../components/EngineersPage";
-import CrewDetailsPage from "../components/CrewDetailsPage";
+import LoginPage from "../components/auth/LoginPage";
+import AddCrewPage from "../components/crew/AddCrewPage";
+import EditCrewPage from "../components/crew/EditCrewPage";
+import CrewPage from "../components/crew/CrewPage";
+import NoPermissionPage from "../components/technical/NoPermissionPage";
+import NotFoundPage from "../components/technical/NotFoundPage";
+import CrewDetailsPage from "../components/crew/CrewDetailsPage";
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
     {
       path: '/',
       name: 'LoginPage',
-      component: LoginPage
+      component: LoginPage,
+      meta: {
+      }
     },
     {
       path: '*',
-      component: NotFoundPage
+      component: NotFoundPage,
+      meta: {
+      }
+    },
+    {
+      path: '/no-permission',
+      component: NoPermissionPage,
+
     },
     {
       path: '/space-ship',
@@ -32,42 +44,79 @@ export default new Router({
         {
           path: '/space-ship/summary',
           name: 'summary',
-          component: MainPage
-        },
-        {
-          path: '/space-ship/',
-          name: 'summary',
-          component: MainPage
+          component: MainPage,
+          meta: {
+            sideMenuName: 'summary',
+          }
         },
         {
           path: '/space-ship/captain-panel',
           name: 'captainPanel',
-          component: CaptainPage
+          component: CaptainPage,
+          meta: {
+            sideMenuName: 'captainPanel',
+          }
+
         },
         {
           path: '/space-ship/crew',
           name: 'crewList',
-          component: CrewPage
+          component: CrewPage,
+          meta: {
+            sideMenuName: 'crewList',
+          }
+
         },
         {
-          path: '/space-ship/crew/:id',
+          path: '/space-ship/crew/details/:id',
           name: 'crewDetails',
-          component: CrewDetailsPage
+          component: CrewDetailsPage,
+          meta: {
+            sideMenuName: 'crewList',
+          }
+        },
+        {
+          path: '/space-ship/crew/:id/edit',
+          name: 'crewEdit',
+          component: EditCrewPage,
+          meta: {
+            sideMenuName: 'crewList',
+          }
+        },
+        {
+          path: '/space-ship/crew/add',
+          name: 'crewAdd',
+          component: AddCrewPage,
+          meta: {
+            sideMenuName: 'crewList',
+          }
         },
         {
           path: '/space-ship/med-bay',
           name: 'medBay',
-          component: ClinicPage
+          component: ClinicPage,
+          meta: {
+            sideMenuName: 'medBay',
+          }
+
         },
         {
           path: '/space-ship/engineers-room',
           name: 'engineersRoom',
-          component: EngineersPage
+          component: EngineersPage,
+          meta: {
+            sideMenuName: 'engineersRoom',
+          }
+
         },
         {
           path: '/space-ship/navigation-room',
           name: 'navigationRoom',
-          component: NavigationPage
+          component: NavigationPage,
+          meta: {
+            sideMenuName: 'navigationRoom',
+          }
+
         },
       ]
     },

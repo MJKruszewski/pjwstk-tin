@@ -6,7 +6,7 @@
     <div class="col-12" style="padding-top: 0">
       <ul style="padding-left: 0;line-height: 24px;">
         <template v-for="item in menuPositions">
-          <li v-on:click="$router.push({name: item.title})" class="rounded-full disable-default" :class="{ hovered: $route.name === item.title }">{{ $t("sideMenu."+item.title) }}</li>
+          <li v-on:click="$router.push({name: item.title})" class="rounded-full disable-default" :class="{ hovered: $route.meta.sideMenuName === item.title }">{{ $t("sideMenu."+item.title) }}</li>
         </template>
       </ul>
     </div>

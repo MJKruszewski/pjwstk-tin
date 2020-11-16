@@ -23,7 +23,7 @@
                 <th>
                     {{ $t('mainPage.task_reporter') }}
                 </th>
-                <th>
+                <th v-if="showActions">
                     {{ $t('mainPage.task_actions') }}
                 </th>
             </tr>
@@ -43,7 +43,7 @@
                     <td>
                         {{ item.reporter.name }} {{ item.reporter.lastName }}
                     </td>
-                    <td>
+                    <td v-if="showActions">
                         <button class="info">Process</button>
                         <button>Cancel</button>
                     </td>
@@ -57,7 +57,8 @@
     export default {
         name: 'TaskLog',
         props: {
-            tasks: []
+            showActions: false,
+            tasks: Array,
         },
         methods: {
             reloadTasks() {

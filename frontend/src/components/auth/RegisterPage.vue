@@ -20,7 +20,7 @@
 </template>
 
 <script>
-    import BackgroundImage from "./utils/BackgroundImage";
+    import BackgroundImage from "./../utils/BackgroundImage";
     export default {
         name: "RegisterPage",
         components: {BackgroundImage}

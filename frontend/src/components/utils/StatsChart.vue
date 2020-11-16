@@ -5,9 +5,17 @@
     export default {
         extends: Radar,
         mixins: [reactiveProp],
-        props: ['options'],
+        props: [
+            'options',
+            'chartData'
+        ],
         mounted () {
             this.renderChart(this.chartData, this.options)
+        },
+        watch: {
+            chartData () {
+                this.$data._chart.update()
+            }
         }
     }
 

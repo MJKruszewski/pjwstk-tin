@@ -20,7 +20,11 @@
     font-family: 'Play', sans-serif;
   }
 
-  input {
+  input[type=text],
+  input[type=password],
+  input[type=date],
+  input[type=datetime-local],
+  input[type=number] {
     font-size: 14px;
     height: 44px;
     padding: 0 42px 0 14px;
@@ -32,9 +36,45 @@
     margin: 10px 0;
     appearance: none;
     transition: border-color .2s,box-shadow .2s;
+    min-width: 240px;
   }
 
-  input:focus {
+
+  select {
+    font-size: 14px;
+    height: 44px;
+    padding: 0 42px 0 14px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+    font-weight: 400;
+    line-height: normal;
+    margin: 10px 0;
+    transition: border-color .2s, box-shadow .2s;
+    min-width: 240px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+  }
+
+  select:hover,
+  select:focus {
+    border-color: #a6dbf3;
+    box-shadow: 0 0 4px rgba(166, 219, 243, .87);
+    outline: none;
+  }
+
+  select.small {
+    height: 22px;
+    min-width: 10px;
+  }
+
+  input[type=text]:focus,
+  input[type=password]:focus,
+  input[type=date]:focus,
+  input[type=datetime-local]:focus,
+  input[type=number]:focus {
     border-color: #a6dbf3;
     box-shadow: 0 0 4px rgba(166, 219, 243, .87);
     outline: none;
@@ -44,6 +84,7 @@
     vertical-align: middle;
     height: 30px;
     background-color: rgba(93, 93, 93, 0.79);
+    min-width: 90px;
     text-align: center;
     border-radius: 5px;
     text-decoration: none;
