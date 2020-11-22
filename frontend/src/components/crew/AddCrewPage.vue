@@ -44,7 +44,7 @@
                 <label for="password" style="font-weight: bold;">{{ $t('editCrew.password') }}:</label>
               </td>
               <td>
-                <input type="text" id="password" v-model="this.crewmate.password"/>
+                <input type="password" id="password" v-model="this.crewmate.password"/>
               </td>
             </tr>
             <tr>
