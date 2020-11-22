@@ -110,6 +110,9 @@ export default {
     condition: 'Kondycja',
     save: 'Zapisz',
     checkOut: 'Wymelduj się',
+    login: 'Login',
+    password: 'Hasło',
+    from: 'Od',
   },
 
 }

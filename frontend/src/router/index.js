@@ -13,6 +13,7 @@ import CrewPage from "../components/crew/CrewPage";
 import NoPermissionPage from "../components/technical/NoPermissionPage";
 import NotFoundPage from "../components/technical/NotFoundPage";
 import CrewDetailsPage from "../components/crew/CrewDetailsPage";
+import RegisterPage from "../components/auth/RegisterPage";
 
 Vue.use(Router);
 
@@ -22,6 +23,12 @@ export default new Router({
       path: '/',
       name: 'LoginPage',
       component: LoginPage,
+      meta: {
+      }
+    },    {
+      path: '/register',
+      name: 'registerPage',
+      component: RegisterPage,
       meta: {
       }
     },

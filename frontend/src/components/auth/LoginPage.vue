@@ -19,7 +19,7 @@
           </form>
 
           <div class="col-12" style="text-align: right">
-            <button>Register</button>
+            <button v-on:click="$router.push({name: 'registerPage'})">Register</button>
             <button class="success" v-on:click="login">Login</button>
           </div>
         </div>

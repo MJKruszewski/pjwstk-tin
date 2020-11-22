@@ -5,7 +5,7 @@
     </div>
 
     <div class="col-12 container-background rounded-full" style="margin-bottom: 10px">
-      <button class="warning" v-on:click="$router.push({ name: 'crewList' })">{{ $t('crewDetails.back') }}</button>
+      <button class="warning" v-on:click="$router.push({ name: backPage || 'crewList' })">{{ $t('crewDetails.back') }}</button>
       <div style="display: inline;float: right;">
         <button class="success" style="font-weight: bold" v-on:click="save()">{{ $t('editCrew.save') }}</button>
       </div>
@@ -29,6 +29,22 @@
               </td>
               <td>
                 <input type="text" id="last_name" v-model="this.crewmate.lastName"/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="login" style="font-weight: bold;">{{ $t('editCrew.login') }}:</label>
+              </td>
+              <td>
+                <input type="text" id="login" v-model="this.crewmate.login"/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="password" style="font-weight: bold;">{{ $t('editCrew.password') }}:</label>
+              </td>
+              <td>
+                <input type="text" id="password" v-model="this.crewmate.password"/>
               </td>
             </tr>
             <tr>
@@ -82,7 +98,7 @@
           </table>
         </form>
       </div>
-      <div class="col-3">
+      <div class="col-3" v-if="displayChart">
         <StatsChart :chart-data="datacollection" :options="options"/>
       </div>
     </div>
@@ -96,10 +112,16 @@
     export default {
         name: "AddCrewPage",
         components: {StatsChart},
+        props: {
+          displayChart: true,
+          backPage: null,
+        },
         data() {
             return {
                 crewmate: {
                     name: null,
+                    login: null,
+                    password: null,
                     lastName: null,
                     department: null,
                     strength: 0,

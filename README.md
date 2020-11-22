@@ -2,7 +2,7 @@
 
 ## Wykres diagramu realcji encji
 
-![schemat](./schemat%20relacji%20encji.PNG)
+![schemat](./pjwstk.png)
 
 ## Technologie
 * VUE

@@ -29,9 +29,20 @@ class Department
      */
     private $stations;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Crewmate::class, mappedBy="mainDepartment")
+     */
+    private $crewmates;
+
     public function __construct()
     {
         $this->stations = new ArrayCollection();
+        $this->crewmates = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -76,6 +87,49 @@ class Department
             // set the owning side to null (unless already changed)
             if ($station->getDepartment() === $this) {
                 $station->setDepartment(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Crewmate[]
+     */
+    public function getCrewmates(): Collection
+    {
+        return $this->crewmates;
+    }
+
+    public function addCrewmate(Crewmate $crewmate): self
+    {
+        if (!$this->crewmates->contains($crewmate)) {
+            $this->crewmates[] = $crewmate;
+            $crewmate->setMainDepartment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCrewmate(Crewmate $crewmate): self
+    {
+        if ($this->crewmates->contains($crewmate)) {
+            $this->crewmates->removeElement($crewmate);
+            // set the owning side to null (unless already changed)
+            if ($crewmate->getMainDepartment() === $this) {
+                $crewmate->setMainDepartment(null);
             }
         }
 

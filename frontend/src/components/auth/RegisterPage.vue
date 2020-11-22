@@ -5,15 +5,7 @@
     <div style="margin-top: 150px"  class="col-12">
       <div class="col-4"></div>
       <div class="col-4 container-background rounded-full">
-        <form>
-          <label for="login">Login:</label>
-          <input type="text" id="login">
-
-          <label for="password">Password:</label>
-          <input type="password" id="password">
-
-        </form>
-        <button>Register</button>
+        <AddCrewPage :display-chart="false" :back-page="'LoginPage'"></AddCrewPage>
       </div>
     </div>
   </div>
@@ -21,9 +13,10 @@
 
 <script>
     import BackgroundImage from "./../utils/BackgroundImage";
+    import AddCrewPage from "../crew/AddCrewPage";
     export default {
         name: "RegisterPage",
-        components: {BackgroundImage}
+        components: {AddCrewPage, BackgroundImage}
     }
 </script>
 

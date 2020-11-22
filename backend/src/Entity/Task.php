@@ -42,6 +42,16 @@ class Task
      */
     private $assignee;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $finishedAt;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -103,6 +113,30 @@ class Task
     public function setAssignee(?Crewmate $assignee): self
     {
         $this->assignee = $assignee;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getFinishedAt(): ?\DateTimeInterface
+    {
+        return $this->finishedAt;
+    }
+
+    public function setFinishedAt(?\DateTimeInterface $finishedAt): self
+    {
+        $this->finishedAt = $finishedAt;
 
         return $this;
     }

@@ -59,6 +59,17 @@ class Crewmate
      */
     private $role;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Department::class, inversedBy="crewmates")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $mainDepartment;
+
     public function __construct()
     {
         $this->crewmateStations = new ArrayCollection();
@@ -205,6 +216,30 @@ class Crewmate
     public function setRole(string $role): self
     {
         $this->role = $role;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getMainDepartment(): ?Department
+    {
+        return $this->mainDepartment;
+    }
+
+    public function setMainDepartment(?Department $mainDepartment): self
+    {
+        $this->mainDepartment = $mainDepartment;
 
         return $this;
     }
