@@ -98,7 +98,7 @@
           </table>
         </form>
       </div>
-      <div class="col-3" v-if="displayChart">
+      <div class="col-3" v-if="getDisplayChart()">
         <StatsChart :chart-data="datacollection" :options="options"/>
       </div>
     </div>
@@ -113,7 +113,7 @@
         name: "AddCrewPage",
         components: {StatsChart},
         props: {
-          displayChart: true,
+          displayChart: Boolean,
           backPage: null,
         },
         data() {
@@ -146,6 +146,13 @@
             this.fillData()
         },
         methods: {
+            getDisplayChart() {
+              if (this.displayChart === null) {
+                  return true;
+              }
+
+              return this.displayChart;
+            },
             save() {
 
             },
