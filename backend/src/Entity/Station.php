@@ -20,29 +20,24 @@ class Station
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=15)
      */
-    private $name;
+    private $code;
 
     /**
      * @ORM\ManyToOne(targetEntity=Department::class, inversedBy="stations")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $department;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Crewmate::class, inversedBy="stations")
+     * @ORM\OneToMany(targetEntity=CrewmateStations::class, mappedBy="station", orphanRemoval=true)
      */
-    private $workers;
-
-    /**
-     * @ORM\OneToMany(targetEntity=StationWorkers::class, mappedBy="station", orphanRemoval=true)
-     */
-    private $stationWorkers;
+    private $crewmateStations;
 
     public function __construct()
     {
-        $this->workers = new ArrayCollection();
-        $this->stationWorkers = new ArrayCollection();
+        $this->crewmateStations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -50,14 +45,14 @@ class Station
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getCode(): ?string
     {
-        return $this->name;
+        return $this->code;
     }
 
-    public function setName(string $name): self
+    public function setCode(string $code): self
     {
-        $this->name = $name;
+        $this->code = $code;
 
         return $this;
     }
@@ -75,30 +70,30 @@ class Station
     }
 
     /**
-     * @return Collection|StationWorkers[]
+     * @return Collection|CrewmateStations[]
      */
-    public function getStationWorkers(): Collection
+    public function getCrewmateStations(): Collection
     {
-        return $this->stationWorkers;
+        return $this->crewmateStations;
     }
 
-    public function addStationWorker(StationWorkers $stationWorker): self
+    public function addCrewmateStation(CrewmateStations $crewmateStation): self
     {
-        if (!$this->stationWorkers->contains($stationWorker)) {
-            $this->stationWorkers[] = $stationWorker;
-            $stationWorker->setStation($this);
+        if (!$this->crewmateStations->contains($crewmateStation)) {
+            $this->crewmateStations[] = $crewmateStation;
+            $crewmateStation->setStation($this);
         }
 
         return $this;
     }
 
-    public function removeStationWorker(StationWorkers $stationWorker): self
+    public function removeCrewmateStation(CrewmateStations $crewmateStation): self
     {
-        if ($this->stationWorkers->contains($stationWorker)) {
-            $this->stationWorkers->removeElement($stationWorker);
+        if ($this->crewmateStations->contains($crewmateStation)) {
+            $this->crewmateStations->removeElement($crewmateStation);
             // set the owning side to null (unless already changed)
-            if ($stationWorker->getStation() === $this) {
-                $stationWorker->setStation(null);
+            if ($crewmateStation->getStation() === $this) {
+                $crewmateStation->setStation(null);
             }
         }
 

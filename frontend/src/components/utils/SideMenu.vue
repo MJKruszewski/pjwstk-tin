@@ -4,7 +4,7 @@
       Menu
     </div>
     <div class="col-12" style="padding-top: 0">
-      <ul style="padding-left: 0;line-height: 24px;">
+      <ul style="padding-left: 0;line-height: 40px;">
         <template v-for="item in menuPositions">
           <li v-on:click="$router.push({name: item.title})" class="rounded-full disable-default" :class="{ hovered: $route.meta.sideMenuName === item.title }">{{ $t("sideMenu."+item.title) }}</li>
         </template>
@@ -48,7 +48,7 @@
     vertical-align: middle;
     list-style-type: none;
     margin-top: 5px;
-    height: 30px;
+    height: 40px;
     background-color: #c1c9ccc9;
     text-align: center;
   }

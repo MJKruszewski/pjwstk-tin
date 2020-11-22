@@ -6,8 +6,8 @@
 
     <button class="info" v-on:click="reloadTasks">{{ $t('mainPage.reload') }}</button>
     <div style="display:inline;float: right">
-      <button class="success" v-if="captainView" v-on:click="showCreate()">{{ $t('mainPage.add') }}</button>
-      <button class="success" v-if="allowSetStation" v-on:click="reloadTasks">{{ $t('mainPage.add') }}</button>
+      <button class="success" v-if="captainView" v-on:click="showCreate">{{ $t('mainPage.add') }}</button>
+      <button class="success" v-if="allowSetStation" v-on:click="showAssign">{{ $t('mainPage.add') }}</button>
     </div>
     <br/>
     <br/>
@@ -87,6 +87,33 @@
       </table>
     </PopupForm>
 
+    <PopupForm
+      :title="popupAssign.title"
+      :display="popupAssign.display"
+      v-on:popup-confirm="assignConfirm"
+      v-on:popup-cancel="assignCancel"
+    >
+      <table class="table-form">
+        <tr>
+          <td>
+            <label for="id">{{ $t('mainPage.code') }}:</label>
+          </td>
+          <td>
+            <select id="id" v-model="popupAssign.id">
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="from">{{ $t('editCrew.from') }}:</label>
+          </td>
+          <td>
+            <input type="date" v-model="popupAssign.from" id="from"/>
+          </td>
+        </tr>
+      </table>
+    </PopupForm>
+
     <Popup
       :title="popup.title"
       :description="popup.description"
@@ -118,6 +145,12 @@
                     code: null,
                     department: null,
                 },
+                popupAssign: {
+                    display: false,
+                    title: null,
+                    id: null,
+                    from: null,
+                },
                 popup: {
                     mate: '',
                     title: '',
@@ -137,14 +170,24 @@
             popupConfirm() {
                 console.log(this.popup.mate)
             },
-
-
+            assignCancel() {
+                this.popupAssign.display = false;
+            },
+            assignConfirm() {
+            },
             showCreate() {
                 this.popupForm.title = this.$t('captainPage.addStation');
                 this.popupForm.id = null;
                 this.popupForm.code = null;
                 this.popupForm.department = null;
                 this.popupForm.display = true
+            },
+
+            showAssign() {
+                this.popupAssign.title = this.$t('editPage.assign');
+                this.popupAssign.id = null;
+                this.popupAssign.from = null;
+                this.popupAssign.display = true
             },
 
             showEdit(item) {

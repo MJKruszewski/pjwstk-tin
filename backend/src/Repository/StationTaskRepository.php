@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\StationWorkers;
+use App\Entity\StationTask;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method StationWorkers|null find($id, $lockMode = null, $lockVersion = null)
- * @method StationWorkers|null findOneBy(array $criteria, array $orderBy = null)
- * @method StationWorkers[]    findAll()
- * @method StationWorkers[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method StationTask|null find($id, $lockMode = null, $lockVersion = null)
+ * @method StationTask|null findOneBy(array $criteria, array $orderBy = null)
+ * @method StationTask[]    findAll()
+ * @method StationTask[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class StationWorkersRepository extends ServiceEntityRepository
+class StationTaskRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, StationWorkers::class);
+        parent::__construct($registry, StationTask::class);
     }
 
     // /**
-    //  * @return StationWorkers[] Returns an array of StationWorkers objects
+    //  * @return StationTask[] Returns an array of StationTask objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class StationWorkersRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?StationWorkers
+    public function findOneBySomeField($value): ?StationTask
     {
         return $this->createQueryBuilder('s')
             ->andWhere('s.exampleField = :val')

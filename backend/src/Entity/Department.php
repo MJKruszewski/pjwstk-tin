@@ -25,18 +25,12 @@ class Department
     private $code;
 
     /**
-     * @ORM\OneToMany(targetEntity=Crewmate::class, mappedBy="department")
-     */
-    private $crewmates;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Station::class, mappedBy="department")
+     * @ORM\OneToMany(targetEntity=Station::class, mappedBy="department", orphanRemoval=true)
      */
     private $stations;
 
     public function __construct()
     {
-        $this->crewmates = new ArrayCollection();
         $this->stations = new ArrayCollection();
     }
 
@@ -53,37 +47,6 @@ class Department
     public function setCode(string $code): self
     {
         $this->code = $code;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Crewmate[]
-     */
-    public function getCrewmates(): Collection
-    {
-        return $this->crewmates;
-    }
-
-    public function addCrewmate(Crewmate $crewmate): self
-    {
-        if (!$this->crewmates->contains($crewmate)) {
-            $this->crewmates[] = $crewmate;
-            $crewmate->setDepartment($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCrewmate(Crewmate $crewmate): self
-    {
-        if ($this->crewmates->contains($crewmate)) {
-            $this->crewmates->removeElement($crewmate);
-            // set the owning side to null (unless already changed)
-            if ($crewmate->getDepartment() === $this) {
-                $crewmate->setDepartment(null);
-            }
-        }
 
         return $this;
     }

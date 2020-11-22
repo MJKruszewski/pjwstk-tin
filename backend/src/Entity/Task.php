@@ -18,21 +18,24 @@ class Task
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Crewmate::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="string", length=50)
      */
-    private $reporter;
+    private $code;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=50)
+     */
+    private $status;
+
+    /**
+     * @ORM\Column(type="smallint", nullable=true)
      */
     private $priority;
 
     /**
-     * @ORM\ManyToOne(targetEntity=TaskStatus::class)
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity=Crewmate::class)
      */
-    private $status;
+    private $reporter;
 
     /**
      * @ORM\ManyToOne(targetEntity=Crewmate::class, inversedBy="tasks")
@@ -44,14 +47,26 @@ class Task
         return $this->id;
     }
 
-    public function getReporter(): ?Crewmate
+    public function getCode(): ?string
     {
-        return $this->reporter;
+        return $this->code;
     }
 
-    public function setReporter(?Crewmate $reporter): self
+    public function setCode(string $code): self
     {
-        $this->reporter = $reporter;
+        $this->code = $code;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
@@ -61,21 +76,21 @@ class Task
         return $this->priority;
     }
 
-    public function setPriority(int $priority): self
+    public function setPriority(?int $priority): self
     {
         $this->priority = $priority;
 
         return $this;
     }
 
-    public function getStatus(): ?TaskStatus
+    public function getReporter(): ?Crewmate
     {
-        return $this->status;
+        return $this->reporter;
     }
 
-    public function setStatus(?TaskStatus $status): self
+    public function setReporter(?Crewmate $reporter): self
     {
-        $this->status = $status;
+        $this->reporter = $reporter;
 
         return $this;
     }

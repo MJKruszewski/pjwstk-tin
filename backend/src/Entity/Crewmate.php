@@ -30,9 +30,24 @@ class Crewmate
     private $lastName;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Department::class, inversedBy="crewmates")
+     * @ORM\Column(type="string", length=255)
      */
-    private $department;
+    private $login;
+
+    /**
+     * @ORM\Column(type="string", length=600)
+     */
+    private $password;
+
+    /**
+     * @ORM\OneToOne(targetEntity=CrewmateStats::class, mappedBy="crewmate", cascade={"persist", "remove"})
+     */
+    private $crewmateStats;
+
+    /**
+     * @ORM\OneToMany(targetEntity=CrewmateStations::class, mappedBy="crewmate", orphanRemoval=true)
+     */
+    private $crewmateStations;
 
     /**
      * @ORM\OneToMany(targetEntity=Task::class, mappedBy="assignee")
@@ -40,26 +55,14 @@ class Crewmate
     private $tasks;
 
     /**
-     * @ORM\OneToMany(targetEntity=Token::class, mappedBy="crewmate")
+     * @ORM\Column(type="string", length=50)
      */
-    private $tokens;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $password;
-
-    /**
-     * @ORM\OneToMany(targetEntity=StationWorkers::class, mappedBy="crewmate", orphanRemoval=true)
-     */
-    private $stationWorkers;
+    private $role;
 
     public function __construct()
     {
+        $this->crewmateStations = new ArrayCollection();
         $this->tasks = new ArrayCollection();
-        $this->tokens = new ArrayCollection();
-        $this->stations = new ArrayCollection();
-        $this->stationWorkers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -91,14 +94,74 @@ class Crewmate
         return $this;
     }
 
-    public function getDepartment(): ?Department
+    public function getLogin(): ?string
     {
-        return $this->department;
+        return $this->login;
     }
 
-    public function setDepartment(?Department $department): self
+    public function setLogin(string $login): self
     {
-        $this->department = $department;
+        $this->login = $login;
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    public function getCrewmateStats(): ?CrewmateStats
+    {
+        return $this->crewmateStats;
+    }
+
+    public function setCrewmateStats(CrewmateStats $crewmateStats): self
+    {
+        $this->crewmateStats = $crewmateStats;
+
+        // set the owning side of the relation if necessary
+        if ($crewmateStats->getCrewmate() !== $this) {
+            $crewmateStats->setCrewmate($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CrewmateStations[]
+     */
+    public function getCrewmateStations(): Collection
+    {
+        return $this->crewmateStations;
+    }
+
+    public function addCrewmateStation(CrewmateStations $crewmateStation): self
+    {
+        if (!$this->crewmateStations->contains($crewmateStation)) {
+            $this->crewmateStations[] = $crewmateStation;
+            $crewmateStation->setCrewmate($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCrewmateStation(CrewmateStations $crewmateStation): self
+    {
+        if ($this->crewmateStations->contains($crewmateStation)) {
+            $this->crewmateStations->removeElement($crewmateStation);
+            // set the owning side to null (unless already changed)
+            if ($crewmateStation->getCrewmate() === $this) {
+                $crewmateStation->setCrewmate(null);
+            }
+        }
 
         return $this;
     }
@@ -134,76 +197,14 @@ class Crewmate
         return $this;
     }
 
-    /**
-     * @return Collection|Token[]
-     */
-    public function getTokens(): Collection
+    public function getRole(): ?string
     {
-        return $this->tokens;
+        return $this->role;
     }
 
-    public function addToken(Token $token): self
+    public function setRole(string $role): self
     {
-        if (!$this->tokens->contains($token)) {
-            $this->tokens[] = $token;
-            $token->setCrewmate($this);
-        }
-
-        return $this;
-    }
-
-    public function removeToken(Token $token): self
-    {
-        if ($this->tokens->contains($token)) {
-            $this->tokens->removeElement($token);
-            // set the owning side to null (unless already changed)
-            if ($token->getCrewmate() === $this) {
-                $token->setCrewmate(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|StationWorkers[]
-     */
-    public function getStationWorkers(): Collection
-    {
-        return $this->stationWorkers;
-    }
-
-    public function addStationWorker(StationWorkers $stationWorker): self
-    {
-        if (!$this->stationWorkers->contains($stationWorker)) {
-            $this->stationWorkers[] = $stationWorker;
-            $stationWorker->setCrewmate($this);
-        }
-
-        return $this;
-    }
-
-    public function removeStationWorker(StationWorkers $stationWorker): self
-    {
-        if ($this->stationWorkers->contains($stationWorker)) {
-            $this->stationWorkers->removeElement($stationWorker);
-            // set the owning side to null (unless already changed)
-            if ($stationWorker->getCrewmate() === $this) {
-                $stationWorker->setCrewmate(null);
-            }
-        }
+        $this->role = $role;
 
         return $this;
     }
