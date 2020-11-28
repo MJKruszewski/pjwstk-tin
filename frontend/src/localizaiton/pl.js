@@ -26,6 +26,7 @@ export default {
     task_priority: 'Priorerytet zadania',
     task_reporter: 'Zgłaszający',
     task_actions: 'Akcje',
+    name: 'Nazwa',
 
     reload: "Odśwież",
     code: "Kod",
@@ -55,6 +56,31 @@ export default {
     doc: "Medycy",
     captain: "Kapitan",
     remove: "Usuń",
+    SEC: "Ochrona",
+    ENG: "Inżynierowie",
+    CAP: "Dowództwo",
+    MED: "Medycy",
+    NAV: "Nawigatorzy",
+  },
+
+  statistics: 'Statystyki',
+
+  stations: {
+    engineer: 'Inżynier',
+    calibrator: 'Kalibrator',
+    programmer: 'Programista',
+
+    captain: 'Kapitan',
+    secretary: 'Sekretarz',
+
+    doctor: 'Lekarz',
+    nurse: 'Pielęgniarka',
+
+    navigator: 'Nawigator',
+    pilot: 'Pilot',
+    spaceMarine: 'Space Marine',
+    marine: 'Żołnież',
+    guard: 'Strażnik',
   },
 
   crewDetails: {
@@ -64,6 +90,7 @@ export default {
 
   crewPage: {
     title: "Lista załogi",
+    ship : "Statek",
     crewName: "Załogant",
     crewDepartment: "Dział załoganta",
     crewTasks: "Zadania  załoganta",

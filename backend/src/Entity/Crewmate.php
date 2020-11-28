@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=CrewmateRepository::class)
  */
-class Crewmate
+class Crewmate implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -53,6 +53,11 @@ class Crewmate
      * @ORM\OneToMany(targetEntity=Task::class, mappedBy="assignee")
      */
     private $tasks;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ShipCrewmates::class, mappedBy="crewmate")
+     */
+    private $shipCrewmates;
 
     /**
      * @ORM\Column(type="string", length=50)
@@ -124,7 +129,7 @@ class Crewmate
 
     public function setPassword(string $password): self
     {
-        $this->password = $password;
+        $this->password = hash('sha512', $password);
 
         return $this;
     }
@@ -243,4 +248,32 @@ class Crewmate
 
         return $this;
     }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+
+            'id' => $this->id,
+            'name' => $this->name,
+            'lastName' => $this->lastName,
+            'login' => $this->login,
+            'stats' => $this->crewmateStats,
+            'stations' => $this->crewmateStations->getValues() ?? [],
+            'tasks' => $this->tasks->getValues() ?? [],
+            'role' => $this->role,
+            'ship' => $this->shipCrewmates->first() ?? [],
+            'createdAt' => $this->createdAt,
+            'mainDepartment' => $this->mainDepartment,
+        ];
+    }
+
+
+
 }

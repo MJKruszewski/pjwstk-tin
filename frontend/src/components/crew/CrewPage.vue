@@ -4,8 +4,17 @@
       <h2>{{ $t('crewPage.title') }}</h2>
     </div>
     <div class="col-12 container-background rounded-full" style="margin-bottom: 10px">
+      <label for="ship">{{ $t('crewPage.ship')}}</label>
+      <select id="ship" v-model="currentShip" v-on:change="reloadList">
+        <template v-for="item in this.ships">
+          <option :value="item.id">
+            {{ item.name }}
+          </option>
+        </template>
+      </select>
+
       <div style="display: inline;float: right;">
-        <button class="success" v-on:click="$router.push({ name: 'crewAdd' })">{{ $t('crewPage.add') }}</button>
+        <button class="success" v-on:click="$router.push({ name: 'crewAdd', params: { showChart: true}})">{{ $t('crewPage.add') }}</button>
       </div>
     </div>
     <div class="col-12 container-background rounded-full">
@@ -18,20 +27,28 @@
           <th>{{ $t('crewPage.crewActions') }}</th>
         </tr>
         </thead>
-        <tbody>
-        <template v-for="mate in crew">
-          <tr>
-            <td>{{ mate.name }} {{ mate.lastName }}</td>
-            <td>{{ $t("departments." + mate.department) }}</td>
-            <td>todo</td>
-            <td>
-              <button class="info" v-on:click="detailsRedirect(mate.id)">{{ $t('crewPage.details') }}</button>
-              <button class="warning" v-on:click="editRedirect(mate.id)">{{ $t('crewPage.edit') }}</button>
-              <button class="danger" v-on:click="showPopup(mate)">{{ $t('crewPage.remove') }}</button>
-            </td>
+
+        <transition-group name="list" tag="tbody">
+          <tr :key="'loading'" v-if="crew.length === 0">
+            <td>Loading ...</td>
+            <td></td>
+            <td></td>
+            <td></td>
           </tr>
-        </template>
-        </tbody>
+
+          <template v-for="mate,key in crew">
+            <tr :key="key">
+              <td>{{ mate.name }} {{ mate.lastName }}</td>
+              <td>{{ $t("departments." + mate.mainDepartment.code) }}</td>
+              <td>todo</td>
+              <td>
+                <button class="info" v-on:click="detailsRedirect(mate.id)">{{ $t('crewPage.details') }}</button>
+                <button class="warning" v-on:click="editRedirect(mate.id)">{{ $t('crewPage.edit') }}</button>
+                <button class="danger" v-on:click="showPopup(mate)">{{ $t('crewPage.remove') }}</button>
+              </td>
+            </tr>
+          </template>
+        </transition-group>
       </table>
     </div>
     <Popup
@@ -45,15 +62,18 @@
 </template>
 
 <script>
-    import crewList from "../../mocks/crewList";
     import Popup from "./../utils/Popup";
+    import {getAllShips} from "../../api/ships";
+    import {getShipCrewmates} from "../../api/crewmates";
 
     export default {
         name: "CrewPage",
         components: {Popup},
         data: () => {
             return {
-                crew: crewList,
+                ships: [],
+                currentShip: 0,
+                crew: [],
                 popup: {
                     mate: '',
                     title: '',
@@ -64,8 +84,22 @@
         },
         mounted() {
             this.popup.description = this.$t('crewPage.popupRemove.description');
+
+            getAllShips().then((res) => {
+                this.ships = res.data.data;
+                this.currentShip = this.$store.state.user.ship.id;
+            });
+
+            getShipCrewmates(50).then((res) => {
+                this.crew = res.data.data
+            })
         },
         methods: {
+            reloadList() {
+                getShipCrewmates(this.currentShip).then((res) => {
+                    this.crew = res.data.data
+                })
+            },
             showPopup(mate) {
               this.popup.title = this.$t("crewPage.popupRemove.title", [mate.name + " " + mate.lastName]);
               this.popup.display = true;
@@ -110,5 +144,16 @@
 
   tr:hover {
     background-color: rgba(245, 245, 245, 0.21);
+  }
+
+  .list-enter-active, .list-leave-active {
+    transition: all 1s;
+  }
+  .list-enter, .list-leave-to{
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  .list-move {
+    transition: transform 1s;
   }
 </style>

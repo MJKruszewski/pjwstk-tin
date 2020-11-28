@@ -5,10 +5,10 @@
     </div>
 
     <div class="col-12">
-      <Stations :stations="allStations" :captainView="true"></Stations>
+      <Stations v-on:reload="loadAllStations()"  :stations="allStations" :captainView="true"></Stations>
     </div>
     <div class="col-12">
-      <Departments :departments="allDepartments" :captainView="true"></Departments>
+      <Departments v-on:reload="loadAllDepartments()" :departments="allDepartments" :captainView="true"></Departments>
     </div>
 
 
@@ -16,18 +16,41 @@
 </template>
 
 <script>
-    import stationsList from "../mocks/stationsList";
     import Stations from "./stations/Stations";
     import Departments from "./departments/Departments";
-    import departmentsList from "../mocks/departmentsList";
+    import {getAllDepartments} from "../api/departments";
+    import {getAllStations} from "../api/stations";
 
     export default {
         name: "CaptainPage",
         components: {Departments, Stations},
+        async beforeMount() {
+
+            getAllDepartments().then((res) => {
+                this.allDepartments = res.data.data
+            });
+            getAllStations().then((res) => {
+                this.allStations = res.data.data
+            });
+        },
+        methods: {
+            loadAllStations() {
+                this.allStations = [];
+                getAllStations().then((res) => {
+                    this.allStations = res.data.data
+                });
+            },
+            loadAllDepartments() {
+                this.allDepartments = [];
+                getAllDepartments().then((res) => {
+                    this.allDepartments = res.data.data
+                });
+            }
+        },
         data() {
             return {
-                allStations: stationsList,
-                allDepartments: departmentsList,
+                allStations: [],
+                allDepartments: [],
             }
         },
     }

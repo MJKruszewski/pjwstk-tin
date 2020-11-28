@@ -4,7 +4,7 @@
       {{ $t('mainPage.departments') }}
     </h2>
 
-    <button class="info" v-on:click="reloadTasks">{{ $t('mainPage.reload') }}</button>
+    <button class="info" v-on:click="$emit('reload')">{{ $t('mainPage.reload') }}</button>
     <div style="display:inline;float: right">
       <button class="success" v-if="captainView" v-on:click="showCreate">{{ $t('mainPage.add') }}</button>
     </div>
@@ -15,6 +15,9 @@
       <thead>
         <tr>
           <th>
+            {{ $t('mainPage.name') }}
+          </th>
+          <th>
             {{ $t('mainPage.code') }}
           </th>
           <th v-if="captainView" width="15%">
@@ -22,11 +25,20 @@
           </th>
         </tr>
       </thead>
-      <tbody>
-      <template v-for="item in departments">
-        <tr>
+      <transition-group name="list" tag="tbody">
+        <tr :key="'loading'" v-if="departments.length === 0">
+          <td>Loading ...</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      <template v-for="item,key in departments">
+        <tr :key="key">
           <td >
-            {{ $t("mainPage." + item.code) }}
+            {{ $t("departments." + item.code) }}
+          </td>
+          <td >
+            {{ item.code }}
           </td>
           <td v-if="captainView">
             <button class="warning" v-on:click="showEdit(item)">{{ $t('crewPage.edit') }}</button>
@@ -34,7 +46,7 @@
           </td>
         </tr>
       </template>
-      </tbody>
+      </transition-group>
     </table>
 
     <PopupForm
@@ -157,5 +169,16 @@
 
   .table-main tr:hover {
     background-color: rgba(245, 245, 245, 0.21);
+  }
+
+  .list-enter-active, .list-leave-active {
+    transition: all 1s;
+  }
+  .list-enter, .list-leave-to{
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  .list-move {
+    transition: transform 1s;
   }
 </style>

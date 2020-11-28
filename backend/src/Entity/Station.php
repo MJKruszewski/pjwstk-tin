@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=StationRepository::class)
  */
-class Station
+class Station implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -115,5 +115,17 @@ class Station
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'code' => $this->getCode(),
+            'department' => [
+                'id' => $this->getDepartment()->getId(),
+                'code' => $this->getDepartment()->getCode(),
+            ]
+        ];
     }
 }

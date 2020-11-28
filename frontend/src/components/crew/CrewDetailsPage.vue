@@ -34,10 +34,10 @@
 <script>
     import StatsChart from "./../utils/StatsChart";
     import crewmateTasks from "../../mocks/crewmateTasks";
-    import crewmate from "../../mocks/crewmate";
     import RefreshIcon from 'vue-material-design-icons/Refresh.vue';
     import TaskLog from "../tasks/TaskLog";
     import Stations from "../stations/Stations";
+    import {getCrewmate} from "../../api/crewmates";
 
     export default {
         name: "CrewDetailsPage",
@@ -47,13 +47,14 @@
                 datacollection: null,
                 crewmate: {
                     name: null,
+                    stats: {
+                        strength: null,
+                        dexterity: null,
+                        intelligence: null,
+                        experience: null,
+                        physicalCondition: null,
+                    },
                     lastName: null,
-                    department: null,
-                    strength: null,
-                    dexterity: null,
-                    intelligence: null,
-                    experience: null,
-                    condition: null,
                     stations: [],
                 },
                 tasks: null,
@@ -77,12 +78,14 @@
                 }
             }
         },
-        mounted() {
-            this.fillData()
-        },
-        beforeMount() {
-            this.crewmate = crewmate;
+        async beforeMount() {
             this.tasks = crewmateTasks;
+
+            await getCrewmate(this.$route.params.id).then((res) => {
+                this.crewmate = res.data.data;
+            });
+
+            this.fillData()
         },
         methods: {
             reloadTasks() {
@@ -96,11 +99,11 @@
                             label: this.$t('statistics'),
                             backgroundColor: '#f87979',
                             data: [
-                                this.crewmate.strength || 0,
-                                this.crewmate.dexterity || 0,
-                                this.crewmate.intelligence || 0,
-                                this.crewmate.experience || 0,
-                                this.crewmate.condition || 0,
+                                this.crewmate.stats.strength || 0,
+                                this.crewmate.stats.dexterity || 0,
+                                this.crewmate.stats.intelligence || 0,
+                                this.crewmate.stats.experience || 0,
+                                this.crewmate.stats.physicalCondition || 0,
                             ]
                         },
                     ]

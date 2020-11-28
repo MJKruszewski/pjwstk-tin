@@ -47,6 +47,8 @@
         },
         mounted() {
             this.fillData()
+
+            this.stations = this.$store.state.user.stations;
         },
         methods: {
             fillData() {

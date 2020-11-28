@@ -4,7 +4,7 @@
             {{ $t('mainPage.tasks_log') }}
         </h2>
 
-        <button class="info" v-on:click="reloadTasks">{{ $t('mainPage.reload') }}</button>
+        <button class="info" v-on:click="$emit('reload')">{{ $t('mainPage.reload') }}</button>
         <br/>
         <br/>
 

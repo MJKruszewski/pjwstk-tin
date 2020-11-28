@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=CrewmateStationsRepository::class)
  */
-class CrewmateStations
+class CrewmateStations implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -24,17 +24,20 @@ class CrewmateStations
     private $crewmate;
 
     /**
+     * @var Station
      * @ORM\ManyToOne(targetEntity=Station::class, inversedBy="crewmateStations")
      * @ORM\JoinColumn(nullable=false)
      */
     private $station;
 
     /**
+     * @var \DateTime
      * @ORM\Column(type="datetime")
      */
     private $dateFrom;
 
     /**
+     * @var \DateTime
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $dateTo;
@@ -90,5 +93,26 @@ class CrewmateStations
         $this->dateTo = $dateTo;
 
         return $this;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->station->getId(),
+            'code' => $this->station->getCode(),
+            'from' => $this->dateFrom ? $this->dateFrom->format(DATE_ISO8601) : null,
+            'to' => $this->dateTo ? $this->dateTo->format(DATE_ISO8601) : null,
+            'department' => [
+                'id' => $this->station->getDepartment()->getId(),
+                'code' => $this->station->getDepartment()->getCode(),
+            ]
+        ];
     }
 }

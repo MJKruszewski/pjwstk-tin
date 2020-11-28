@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\AuthorizationToken;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\SqlFormatter\Token;
 
 /**
  * @method AuthorizationToken|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,22 +20,21 @@ class AuthorizationTokenRepository extends ServiceEntityRepository
         parent::__construct($registry, AuthorizationToken::class);
     }
 
-    // /**
-    //  * @return AuthorizationToken[] Returns an array of AuthorizationToken objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param string $token
+     * @return AuthorizationToken Returns an array of AuthorizationToken objects
+     * @throws \Exception
+     */
+    public function findValidByToken(string $token): ?AuthorizationToken
     {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('p')
+            ->where('p.token = :token')
+            ->andWhere('p.expireAt > :expireAt')
+            ->setParameter('expireAt', new \DateTime())
+            ->setParameter('token', $token)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getSingleResult();
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?AuthorizationToken

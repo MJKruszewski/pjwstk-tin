@@ -33,10 +33,24 @@
             </tr>
             <tr>
               <td>
+                <label for="ship">{{ $t('crewPage.ship')}}</label>
+              </td>
+              <td>
+                <select id="ship">
+                  <template v-for="item in this.ships">
+                    <option :id="item.id">
+                      {{ item.name }}
+                    </option>
+                  </template>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>
                 <label for="login" style="font-weight: bold;">{{ $t('editCrew.login') }}:</label>
               </td>
               <td>
-                <input type="text" id="login" v-model="this.crewmate.login"/>
+                <input type="text" id="login" v-model="crewmate.login"/>
               </td>
             </tr>
             <tr>
@@ -44,7 +58,7 @@
                 <label for="password" style="font-weight: bold;">{{ $t('editCrew.password') }}:</label>
               </td>
               <td>
-                <input type="password" id="password" v-model="this.crewmate.password"/>
+                <input type="password" id="password" v-model="crewmate.password"/>
               </td>
             </tr>
             <tr>
@@ -52,7 +66,12 @@
                 <label for="department_id" style="font-weight: bold;">{{ $t('editCrew.department') }}:</label>
               </td>
               <td>
-                <select id="department_id"></select>
+                <select id="department_id" v-model="crewmate.mainDepartment">
+                  <template v-for="item in departments">
+                    <option :value="item.id">{{ $t('departments.' + item.code)  }}</option>
+                  </template>
+
+                </select>
               </td>
             </tr>
             <tr>
@@ -60,7 +79,7 @@
                 <label for="strength" style="font-weight: bold;">{{ $t('editCrew.strength') }}:</label>
               </td>
               <td>
-                <input id="strength" type="range" min="0" value="0" max="10" v-model="crewmate.strength"/>
+                <input id="strength" type="range" min="0" value="0" max="10" v-model="crewmate.stats.strength"/>
               </td>
             </tr>
             <tr>
@@ -68,7 +87,7 @@
                 <label for="dexterity" style="font-weight: bold;">{{ $t('editCrew.dexterity') }}:</label>
               </td>
               <td>
-                <input id="dexterity" type="range" min="0" value="0" max="10" v-model="crewmate.dexterity"/>
+                <input id="dexterity" type="range" min="0" value="0" max="10" v-model="crewmate.stats.dexterity"/>
               </td>
             </tr>
             <tr>
@@ -76,7 +95,7 @@
                 <label for="intelligence" style="font-weight: bold;">{{ $t('editCrew.intelligence') }}:</label>
               </td>
               <td>
-                <input id="intelligence" type="range" min="0" value="0" max="10" v-model="crewmate.intelligence"/>
+                <input id="intelligence" type="range" min="0" value="0" max="10" v-model="crewmate.stats.intelligence"/>
               </td>
             </tr>
             <tr>
@@ -84,7 +103,7 @@
                 <label for="experience" style="font-weight: bold;">{{ $t('editCrew.experience') }}:</label>
               </td>
               <td>
-                <input id="experience" type="range" min="0" value="0" max="10" v-model="crewmate.experience"/>
+                <input id="experience" type="range" min="0" value="0" max="10" v-model="crewmate.stats.experience"/>
               </td>
             </tr>
             <tr>
@@ -92,7 +111,7 @@
                 <label for="condition" style="font-weight: bold;">{{ $t('editCrew.condition') }}:</label>
               </td>
               <td>
-                <input id="condition" type="range" min="0" value="0" max="10" v-model="crewmate.condition"/>
+                <input id="condition" type="range" min="0" value="0" max="10" v-model="crewmate.stats.physicalCondition"/>
               </td>
             </tr>
           </table>
@@ -109,6 +128,8 @@
 <script>
     import StatsChart from "./../utils/StatsChart";
     import chartOptions from "./../utils/chartOptions";
+    import {getAllShips} from "../../api/ships";
+    import {getAllDepartments} from "../../api/departments";
     export default {
         name: "AddCrewPage",
         components: {StatsChart},
@@ -118,17 +139,22 @@
         },
         data() {
             return {
+                ships: [],
+                departments: [],
                 crewmate: {
                     name: null,
                     login: null,
                     password: null,
+                    mainDepartment: null,
+                    stats: {
+                        strength: null,
+                        dexterity: null,
+                        intelligence: null,
+                        experience: null,
+                        physicalCondition: null,
+                    },
                     lastName: null,
-                    department: null,
-                    strength: 0,
-                    dexterity: 0,
-                    intelligence: 0,
-                    experience: 0,
-                    condition: 0,
+                    stations: [],
                 },
                 datacollection: null,
                 options: chartOptions,
@@ -137,17 +163,30 @@
         watch: {
             crewmate: {
                 handler() {
+                    if(this === null) {
+                        return;
+                    }
+
                     this.fillData()
                 },
                 deep: true,
             }
         },
+        beforeMount() {
+            this.fillData();
+        },
         mounted() {
-            this.fillData()
+            getAllShips().then((res) => {
+                this.ships = res.data.data;
+            });
+
+            getAllDepartments().then((res) => {
+                this.departments = res.data.data
+            })
         },
         methods: {
             getDisplayChart() {
-              if (this.displayChart === null) {
+              if (this.$route.params.showChart === true) {
                   return true;
               }
 
@@ -164,11 +203,11 @@
                             label: this.$t('statistics'),
                             backgroundColor: '#f87979',
                             data: [
-                                parseInt(this.crewmate.strength || 0),
-                                parseInt(this.crewmate.dexterity || 0),
-                                parseInt(this.crewmate.intelligence || 0),
-                                parseInt(this.crewmate.experience || 0),
-                                parseInt(this.crewmate.condition || 0),
+                                parseInt(this.crewmate.stats.strength || 0),
+                                parseInt(this.crewmate.stats.dexterity || 0),
+                                parseInt(this.crewmate.stats.intelligence || 0),
+                                parseInt(this.crewmate.stats.experience || 0),
+                                parseInt(this.crewmate.stats.physicalCondition || 0),
                             ]
                         },
                     ]

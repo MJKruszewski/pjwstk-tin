@@ -33,7 +33,7 @@
                 <label for="strength" style="font-weight: bold;">{{ $t('editCrew.strength') }}:</label>
               </td>
               <td>
-                <input id="strength" type="range" min="0" value="0" max="10" v-model="crewmate.strength"/>
+                <input id="strength" type="range" min="0" value="0" max="10" v-model="crewmate.stats.strength"/>
               </td>
             </tr>
             <tr>
@@ -41,7 +41,7 @@
                 <label for="dexterity" style="font-weight: bold;">{{ $t('editCrew.dexterity') }}:</label>
               </td>
               <td>
-                <input id="dexterity" type="range" min="0" value="0" max="10" v-model="crewmate.dexterity"/>
+                <input id="dexterity" type="range" min="0" value="0" max="10" v-model="crewmate.stats.dexterity"/>
               </td>
             </tr>
             <tr>
@@ -49,7 +49,7 @@
                 <label for="intelligence" style="font-weight: bold;">{{ $t('editCrew.intelligence') }}:</label>
               </td>
               <td>
-                <input id="intelligence" type="range" min="0" value="0" max="10" v-model="crewmate.intelligence"/>
+                <input id="intelligence" type="range" min="0" value="0" max="10" v-model="crewmate.stats.intelligence"/>
               </td>
             </tr>
             <tr>
@@ -57,7 +57,7 @@
                 <label for="experience" style="font-weight: bold;">{{ $t('editCrew.experience') }}:</label>
               </td>
               <td>
-                <input id="experience" type="range" min="0" value="0" max="10" v-model="crewmate.experience"/>
+                <input id="experience" type="range" min="0" value="0" max="10" v-model="crewmate.stats.experience"/>
               </td>
             </tr>
             <tr>
@@ -65,7 +65,7 @@
                 <label for="condition" style="font-weight: bold;">{{ $t('editCrew.condition') }}:</label>
               </td>
               <td>
-                <input id="condition" type="range" min="0" value="0" max="10" v-model="crewmate.condition"/>
+                <input id="condition" type="range" min="0" value="0" max="10" v-model="crewmate.stats.physicalCondition"/>
               </td>
             </tr>
           </table>
@@ -80,10 +80,10 @@
 </template>
 
 <script>
-    import crewmate from "./../../mocks/crewmate";
     import StatsChart from "./../utils/StatsChart";
     import chartOptions from "./../utils/chartOptions";
     import Stations from "../stations/Stations";
+    import {getCrewmate} from "../../api/crewmates";
 
     export default {
         name: "EditCrewPage",
@@ -93,24 +93,27 @@
                 datacollection: null,
                 crewmate: {
                     name: null,
+                    stats: {
+                        strength: null,
+                        dexterity: null,
+                        intelligence: null,
+                        experience: null,
+                        physicalCondition: null,
+                    },
                     lastName: null,
-                    department: null,
-                    strength: null,
-                    dexterity: null,
-                    intelligence: null,
-                    experience: null,
-                    condition: null,
                     stations: [],
                 },
                 options: chartOptions
             };
         },
-        beforeMount() {
-            this.crewmate = crewmate;
-        },
-        mounted() {
+        async beforeMount() {
+            await getCrewmate(this.$route.params.id).then((res) => {
+                this.crewmate = res.data.data;
+            });
+
             this.fillData()
         },
+
         watch: {
             crewmate: {
                 handler() {
@@ -131,11 +134,11 @@
                             label: this.$t('statistics'),
                             backgroundColor: '#f87979',
                             data: [
-                                parseInt(this.crewmate.strength || 0),
-                                parseInt(this.crewmate.dexterity || 0),
-                                parseInt(this.crewmate.intelligence || 0),
-                                parseInt(this.crewmate.experience || 0),
-                                parseInt(this.crewmate.condition || 0),
+                                parseInt(this.crewmate.stats.strength || 0),
+                                parseInt(this.crewmate.stats.dexterity || 0),
+                                parseInt(this.crewmate.stats.intelligence || 0),
+                                parseInt(this.crewmate.stats.experience || 0),
+                                parseInt(this.crewmate.stats.physicalCondition || 0),
                             ]
                         },
                     ]

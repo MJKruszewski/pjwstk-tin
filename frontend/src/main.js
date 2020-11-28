@@ -6,6 +6,8 @@ import router from './router'
 import VueI18n from 'vue-i18n'
 import localization from './localizaiton'
 import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
+import * as Cookies from 'js-cookie'
 
 Vue.use(Vuex);
 Vue.use(VueI18n);
@@ -17,12 +19,22 @@ const i18n = new VueI18n({
   messages: localization,
 });
 
-const store = new Vuex.Store({
+export const localStore = new Vuex.Store({
   state: {
+    session: {
+      token: null,
+      expireAt: null,
+    },
     user: {
       name: "Guest",
       lastName: "Guest",
       role: 'captain',
+      ship: {
+        id:	null,
+        name:	null,
+        hull:	null,
+        engines:	null,
+      },
       stats: {
         strength: 1,
         dexterity: 3,
@@ -33,9 +45,25 @@ const store = new Vuex.Store({
     },
   },
   mutations: {
-  }
+    setCrewmate (state, payload) {
+      state.user = payload;
+    },
+    setSession (state, payload) {
+      state.session = payload;
+    }
+  },
+  actions: {
+    setCrewmate (context, crewmate) {
+      context.commit('setCrewmate', crewmate)
+    },
+    setSession (context, session) {
+      context.commit('setSession', session)
+    }
+  },
+  plugins: [createPersistedState()],
 });
 
+let store = localStore;
 
 
 /* eslint-disable no-new */

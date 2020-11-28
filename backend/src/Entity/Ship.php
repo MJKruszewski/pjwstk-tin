@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=ShipRepository::class)
  */
-class Ship
+class Ship implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -28,6 +28,16 @@ class Ship
      * @ORM\OneToMany(targetEntity=ShipCrewmates::class, mappedBy="ship")
      */
     private $shipCrewmates;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $hull;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $engines;
 
     public function __construct()
     {
@@ -80,5 +90,46 @@ class Ship
         }
 
         return $this;
+    }
+
+    public function getHull(): ?int
+    {
+        return $this->hull;
+    }
+
+    public function setHull(int $hull): self
+    {
+        $this->hull = $hull;
+
+        return $this;
+    }
+
+    public function getEngines(): ?int
+    {
+        return $this->engines;
+    }
+
+    public function setEngines(int $engines): self
+    {
+        $this->engines = $engines;
+
+        return $this;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'hull' => $this->hull,
+            'engines' => $this->engines,
+        ];
     }
 }

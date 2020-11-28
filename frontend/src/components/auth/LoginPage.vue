@@ -9,11 +9,11 @@
             <div class="col-12" style="text-align: center">
               <label for="login" style="font-weight: bold;">Login:</label>
               <br/>
-              <input type="text" id="login" placeholder="username">
+              <input v-model="username" type="text" id="login" placeholder="username">
               <br/>
               <label for="password" style="font-weight: bold">Password:</label>
               <br/>
-              <input type="password" id="password" placeholder="password">
+              <input v-model="password" type="password" id="password" placeholder="password">
             </div>
 
           </form>
@@ -30,12 +30,27 @@
 
 <script>
     import BackgroundImage from "./../utils/BackgroundImage";
+    import {postLogin} from "../../api/login";
     export default {
         name: "LoginPage",
         components: {BackgroundImage},
+        data: () => {
+            return {
+                username: null,
+                password: null,
+            }
+        },
         methods: {
             login() {
-                this.$router.push({name: 'summary'})
+                postLogin(this.username, this.password).then((res) => {
+                    this.$store.dispatch('setCrewmate', res.data.data.crewmate)
+                    this.$store.dispatch('setSession', {
+                        token: res.data.data.token,
+                        expireAt: res.data.data.expireAt
+                    })
+
+                    this.$router.push({name: 'summary'})
+                });
             }
         }
     }

@@ -9,6 +9,12 @@ require dirname(__DIR__).'/vendor/autoload.php';
 
 (new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
 
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
+header("Access-Control-Allow-Credentials: true");
+header("Access-Control-Max-Age: 86400");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
+
 if ($_SERVER['APP_DEBUG']) {
     umask(0000);
 

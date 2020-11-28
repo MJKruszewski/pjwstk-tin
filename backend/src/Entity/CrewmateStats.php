@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=CrewmateStatsRepository::class)
  */
-class CrewmateStats
+class CrewmateStats implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -123,5 +123,23 @@ class CrewmateStats
         $this->crewmate = $crewmate;
 
         return $this;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'dexterity' => $this->dexterity,
+            'strength' => $this->strength,
+            'physicalCondition' => $this->physicalCondition,
+            'intelligence' => $this->intelligence,
+            'experience' => $this->experience,
+        ];
     }
 }
