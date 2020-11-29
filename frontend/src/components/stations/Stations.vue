@@ -4,7 +4,7 @@
       {{ $t('mainPage.stations') }}
     </h2>
 
-    <button class="info" v-on:click="$emit('reload')">{{ $t('mainPage.reload') }}</button>
+    <button :disabled="lockReload" :class="{ 'disabled-button': lockReload}" class="info" v-on:click="$emit('reload')">{{ $t('mainPage.reload') }}</button>
     <div style="display:inline;float: right">
       <button class="success" v-if="captainView" v-on:click="showCreate">{{ $t('mainPage.add') }}</button>
       <button class="success" v-if="allowSetStation" v-on:click="showAssign">{{ $t('mainPage.add') }}</button>
@@ -93,6 +93,11 @@
           </td>
           <td>
             <select v-model="popupForm.department" id="department">
+              <template v-for="item in allDepartments">
+                <option :value="item.id">
+                  {{ $t('departments.' + item.code) }}
+                </option>
+              </template>
             </select>
           </td>
         </tr>
@@ -112,6 +117,11 @@
           </td>
           <td>
             <select id="id" v-model="popupAssign.id">
+              <template v-for="item in allStations">
+                <option :value="item.id">
+                  {{ $t('stations.' + item.code) }}
+                </option>
+              </template>
             </select>
           </td>
         </tr>
@@ -138,18 +148,26 @@
 <script>
     import Popup from "../utils/Popup";
     import PopupForm from "../utils/PopupForm";
+    import {getAllStations, postCrewmateStation} from "../../api/stations";
+    import {getAllDepartments} from "../../api/departments";
 
     export default {
         name: 'Stations',
         components: {PopupForm, Popup},
         props: {
             captainView: false,
+            lockReload: false,
             allowSetStation: false,
             userView: false,
-            stations: Array,
+            stations: null,
         },
         data() {
             return {
+                allStations: [],
+                allDepartments: [],
+                new: {
+                    station: null,
+                },
                 popupForm: {
                     display: false,
                     title: null,
@@ -171,6 +189,17 @@
                 }
             }
         },
+        async beforeMount() {
+            getAllDepartments().then((res) => {
+                this.allDepartments = res.data.data
+            });
+
+            if (this.allowSetStation) {
+                getAllStations().then((res) => {
+                    this.allStations = res.data.data
+                });
+            }
+        },
         methods: {
             terminate(item) {
                 item.to = new Date();
@@ -186,6 +215,9 @@
                 this.popupAssign.display = false;
             },
             assignConfirm() {
+                postCrewmateStation(this.$route.params.id, this.popupAssign.id, this.popupAssign.from).then((res) => {
+                    this.popup.display = false;
+                })
             },
             showCreate() {
                 this.popupForm.title = this.$t('captainPage.addStation');
@@ -196,7 +228,7 @@
             },
 
             showAssign() {
-                this.popupAssign.title = this.$t('editPage.assign');
+                this.popupAssign.title = this.$t('editCrew.assign');
                 this.popupAssign.id = null;
                 this.popupAssign.from = null;
                 this.popupAssign.display = true

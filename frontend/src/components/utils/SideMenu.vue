@@ -6,7 +6,7 @@
     <div class="col-12" style="padding-top: 0">
       <ul style="padding-left: 0;line-height: 40px;">
         <template v-for="item in menuPositions">
-          <li v-on:click="$router.push({name: item.title})" class="rounded-full disable-default" :class="{ hovered: $route.meta.sideMenuName === item.title }">{{ $t("sideMenu."+item.title) }}</li>
+          <li v-if="display(item)" v-on:click="$router.push({name: item.title})" class="rounded-full disable-default" :class="{ hovered: $route.meta.sideMenuName === item.title }">{{ $t("sideMenu."+item.title) }}</li>
         </template>
       </ul>
     </div>
@@ -14,28 +14,65 @@
 </template>
 
 <script>
+    import {isRolePresent} from "../../api/crewmates";
+
     export default {
         name: "SideMenu",
+        methods: {
+            display(item) {
+                if (0 >= item.roles.length) {
+                    return true;
+                }
+
+                return isRolePresent(item.roles);
+            }
+        },
         data: () => {
             return {
                 menuPositions: [
                     {
                         title: 'summary',
+                        roles: []
                     },
                     {
                         title: 'captainPanel',
+                        roles: [
+                            'captain',
+                            'secretary',
+                        ]
                     },
                     {
                         title: 'crewList',
+                        roles: []
+                    },
+                    {
+                        title: 'tasks',
+                        roles: []
                     },
                     {
                         title: 'medBay',
+                        roles: [
+                            'captain',
+                            'medic',
+                            'nurse',
+                        ]
                     },
                     {
                         title: 'engineersRoom',
+                        roles: [
+                            'captain',
+                            'engineer',
+                            'programmer',
+                            'calibrator',
+                        ]
                     },
                     {
                         title: 'navigationRoom',
+                        roles: [
+                            'captain',
+                            'pilot',
+                            'navigator',
+                        ]
                     },
                 ],
             }

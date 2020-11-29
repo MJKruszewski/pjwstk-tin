@@ -4,8 +4,8 @@
       <h2>{{ $t('crewPage.title') }}</h2>
     </div>
     <div class="col-12 container-background rounded-full" style="margin-bottom: 10px">
-      <label for="ship">{{ $t('crewPage.ship')}}</label>
-      <select id="ship" v-model="currentShip" v-on:change="reloadList">
+      <label for="ship">{{ $t('crewPage.ship')}}: <p style="display: inline" v-if="!showButtons()">{{ this.$store.state.user.ship.name }}</p></label>
+      <select v-if="showButtons()" id="ship" v-model="currentShip" v-on:change="reloadList">
         <template v-for="item in this.ships">
           <option :value="item.id">
             {{ item.name }}
@@ -14,7 +14,7 @@
       </select>
 
       <div style="display: inline;float: right;">
-        <button class="success" v-on:click="$router.push({ name: 'crewAdd', params: { showChart: true}})">{{ $t('crewPage.add') }}</button>
+        <button v-if="showButtons()" class="success" v-on:click="$router.push({ name: 'crewAdd', params: { showChart: true}})">{{ $t('crewPage.add') }}</button>
       </div>
     </div>
     <div class="col-12 container-background rounded-full">
@@ -64,7 +64,7 @@
 <script>
     import Popup from "./../utils/Popup";
     import {getAllShips} from "../../api/ships";
-    import {getShipCrewmates} from "../../api/crewmates";
+    import {getShipCrewmates, isCaptain} from "../../api/crewmates";
 
     export default {
         name: "CrewPage",
@@ -90,11 +90,14 @@
                 this.currentShip = this.$store.state.user.ship.id;
             });
 
-            getShipCrewmates(50).then((res) => {
+            getShipCrewmates(this.$store.state.user.ship.id).then((res) => {
                 this.crew = res.data.data
             })
         },
         methods: {
+            showButtons() {
+                return isCaptain();
+            },
             reloadList() {
                 getShipCrewmates(this.currentShip).then((res) => {
                     this.crew = res.data.data

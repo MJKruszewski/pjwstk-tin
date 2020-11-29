@@ -18,3 +18,15 @@ export async function getCrewmate(id) {
     }
   });
 }
+
+export function isCaptain() {
+  return localStore.state.user.roles.includes('captain');
+}
+
+export function isRolePresent(role) {
+  if (Array.isArray(role)) {
+    return localStore.state.user.roles.includes(...role);
+  }
+
+  return localStore.state.user.roles.includes(role);
+}

@@ -39,9 +39,15 @@ class Ship implements \JsonSerializable
      */
     private $engines;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Task::class, mappedBy="ship", orphanRemoval=true)
+     */
+    private $tasks;
+
     public function __construct()
     {
         $this->shipCrewmates = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -131,5 +137,36 @@ class Ship implements \JsonSerializable
             'hull' => $this->hull,
             'engines' => $this->engines,
         ];
+    }
+
+    /**
+     * @return Collection|Task[]
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): self
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks[] = $task;
+            $task->setShip($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): self
+    {
+        if ($this->tasks->contains($task)) {
+            $this->tasks->removeElement($task);
+            // set the owning side to null (unless already changed)
+            if ($task->getShip() === $this) {
+                $task->setShip(null);
+            }
+        }
+
+        return $this;
     }
 }

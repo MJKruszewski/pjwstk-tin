@@ -30,6 +30,33 @@
             </tr>
             <tr>
               <td>
+                <label for="department_id" style="font-weight: bold;">{{ $t('editCrew.department') }}:</label>
+              </td>
+              <td>
+                <select id="department_id" v-model="crewmate.mainDepartment.id">
+                  <template v-for="item in departments">
+                    <option :value="item.id">{{ $t('departments.' + item.code)  }}</option>
+                  </template>
+
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label for="ship" style="font-weight: bold;">{{ $t('crewPage.ship')}}</label>
+              </td>
+              <td>
+                <select id="ship" v-model="crewmate.ship.id" >
+                  <template v-for="item in this.ships">
+                    <option :value="item.id">
+                      {{ item.name }}
+                    </option>
+                  </template>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>
                 <label for="strength" style="font-weight: bold;">{{ $t('editCrew.strength') }}:</label>
               </td>
               <td>
@@ -84,6 +111,8 @@
     import chartOptions from "./../utils/chartOptions";
     import Stations from "../stations/Stations";
     import {getCrewmate} from "../../api/crewmates";
+    import {getAllDepartments} from "../../api/departments";
+    import {getAllShips} from "../../api/ships";
 
     export default {
         name: "EditCrewPage",
@@ -91,8 +120,17 @@
         data() {
             return {
                 datacollection: null,
+                departments: [],
+                ships: [],
                 crewmate: {
                     name: null,
+                    mainDepartment: {
+                      code: null,
+                      id: null,
+                    },
+                    ship: {
+                        id: null,
+                    },
                     stats: {
                         strength: null,
                         dexterity: null,
@@ -107,8 +145,16 @@
             };
         },
         async beforeMount() {
-            await getCrewmate(this.$route.params.id).then((res) => {
+            getCrewmate(this.$route.params.id).then((res) => {
                 this.crewmate = res.data.data;
+            });
+
+            getAllShips().then((res) => {
+                this.ships = res.data.data;
+            });
+
+            getAllDepartments().then((res) => {
+                this.departments = res.data.data
             });
 
             this.fillData()

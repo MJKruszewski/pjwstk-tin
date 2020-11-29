@@ -10,3 +10,14 @@ export async function getAllStations() {
     }
   });
 }
+
+export async function postCrewmateStation(crewmate, stationId, from) {
+  return axios.post(API_HOST + '/api/v1/crewmates/' + crewmate + '/stations', {
+    stationId: stationId,
+    from: from,
+  },{
+    headers: {
+      Authorization: localStore.state.session.token
+    }
+  });
+}

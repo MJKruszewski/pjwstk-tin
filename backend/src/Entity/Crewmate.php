@@ -249,6 +249,27 @@ class Crewmate implements \JsonSerializable
         return $this;
     }
 
+
+    public function isCaptain(): bool
+    {
+        /** @var CrewmateStations $crewmateStation */
+        foreach ($this->crewmateStations as $crewmateStation) {
+            if ($crewmateStation->getStation()->getCode() === Station::CAPTAIN_CODE && $crewmateStation->isNotExpired()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return Ship
+     */
+    public function getShip(): ?Ship
+    {
+        return $this->shipCrewmates->first() ?? [];
+    }
+
     /**
      * Specify data which should be serialized to JSON
      * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
@@ -267,7 +288,19 @@ class Crewmate implements \JsonSerializable
             'stats' => $this->crewmateStats,
             'stations' => $this->crewmateStations->getValues() ?? [],
             'tasks' => $this->tasks->getValues() ?? [],
-            'role' => $this->role,
+            'roles' => array_map(function (CrewmateStations $crewmateStations) {
+                return $crewmateStations->getStation()->getCode();
+            }, array_filter($this->getCrewmateStations()->toArray(), function (CrewmateStations $crewmateStations) {
+                if ($crewmateStations->getDateTo() === null) {
+                    return true;
+                }
+
+                if ($crewmateStations->getDateTo() > new \DateTime()) {
+                    return true;
+                }
+
+                return false;
+            })),
             'ship' => $this->shipCrewmates->first() ?? [],
             'createdAt' => $this->createdAt,
             'mainDepartment' => $this->mainDepartment,

@@ -13,4 +13,11 @@ export async function postLogin(login, password) {
     }
   });
 }
+export async function getMe() {
+  return axios.get(API_HOST + '/api/v1/auth/me', {
+    headers: {
+      Authorization: localStore.state.session.token
+    }
+  });
+}
 

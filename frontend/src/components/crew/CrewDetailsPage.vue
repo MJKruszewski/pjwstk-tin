@@ -33,7 +33,6 @@
 
 <script>
     import StatsChart from "./../utils/StatsChart";
-    import crewmateTasks from "../../mocks/crewmateTasks";
     import RefreshIcon from 'vue-material-design-icons/Refresh.vue';
     import TaskLog from "../tasks/TaskLog";
     import Stations from "../stations/Stations";
@@ -79,10 +78,9 @@
             }
         },
         async beforeMount() {
-            this.tasks = crewmateTasks;
-
             await getCrewmate(this.$route.params.id).then((res) => {
                 this.crewmate = res.data.data;
+                this.tasks = res.data.data.tasks;
             });
 
             this.fillData()

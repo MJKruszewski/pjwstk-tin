@@ -20,6 +20,27 @@
         name: "NavBar",
         methods: {
             logout() {
+
+                this.$store.commit('setCrewmate', {
+                    id: null,
+                    name: "Guest",
+                    lastName: "Guest",
+                    role: 'captain',
+                    ship: {
+                        id:	null,
+                        name:	null,
+                        hull:	null,
+                        engines:	null,
+                    },
+                    stats: {
+                        strength: 1,
+                        dexterity: 3,
+                        intelligence: 6,
+                        experience: 9,
+                        condition: 2,
+                    }
+                });
+
                 this.$router.push({name: 'LoginPage'})
             }
         }

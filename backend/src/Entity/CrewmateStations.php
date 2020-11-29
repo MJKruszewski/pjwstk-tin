@@ -95,6 +95,11 @@ class CrewmateStations implements \JsonSerializable
         return $this;
     }
 
+    public function isNotExpired(): bool
+    {
+        return $this->dateTo === null || $this->dateTo > new \DateTime();
+    }
+
     /**
      * Specify data which should be serialized to JSON
      * @link https://php.net/manual/en/jsonserializable.jsonserialize.php

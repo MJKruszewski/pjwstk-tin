@@ -12,6 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Station implements \JsonSerializable
 {
+
+    const CAPTAIN_CODE = 'captain';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -40,9 +43,15 @@ class Station implements \JsonSerializable
      */
     private $createdAt;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Task::class, mappedBy="station")
+     */
+    private $tasks;
+
     public function __construct()
     {
         $this->crewmateStations = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -127,5 +136,36 @@ class Station implements \JsonSerializable
                 'code' => $this->getDepartment()->getCode(),
             ]
         ];
+    }
+
+    /**
+     * @return Collection|Task[]
+     */
+    public function getTasks(): Collection
+    {
+        return $this->tasks;
+    }
+
+    public function addTask(Task $task): self
+    {
+        if (!$this->tasks->contains($task)) {
+            $this->tasks[] = $task;
+            $task->setStation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): self
+    {
+        if ($this->tasks->contains($task)) {
+            $this->tasks->removeElement($task);
+            // set the owning side to null (unless already changed)
+            if ($task->getStation() === $this) {
+                $task->setStation(null);
+            }
+        }
+
+        return $this;
     }
 }

@@ -8,11 +8,11 @@
       <StatsChart :chart-data="datacollection" :options="options"/>
     </div>
     <div class="col-9" style="padding-top: 0;">
-      <TaskLog :tasks="tasks" :showActions="true"/>
+      <TaskLog :lock-reload="lockButtons" v-on:reload="reload()" :tasks="$store.state.user.tasks" :showActions="true"/>
     </div>
     <div class="col-3" style="padding-top: 0;"></div>
     <div class="col-9" style="padding-top: 0;">
-      <Stations :stations="stations" :user-view="true" />
+      <Stations :lock-reload="lockButtons" v-on:reload="reload()" :stations="stations" :user-view="true" />
     </div>
 
     <div class="col-12">
@@ -29,18 +29,18 @@
 
 <script>
     import StatsChart from "./utils/StatsChart";
-    import crewmateTasks from "../mocks/crewmateTasks";
     import chartOptions from "./utils/chartOptions";
     import Stations from "./stations/Stations";
     import TaskLog from "./tasks/TaskLog";
+    import {getMe} from "../api/login";
 
     export default {
         name: "MainPage",
         components: {TaskLog, Stations, StatsChart},
         data() {
             return {
+                lockButtons: false,
                 datacollection: null,
-                tasks: crewmateTasks,
                 stations: [],
                 options: chartOptions,
             }
@@ -51,6 +51,14 @@
             this.stations = this.$store.state.user.stations;
         },
         methods: {
+            reload() {
+                this.lockButtons = true;
+                getMe().then((res) => {
+                    this.$store.dispatch('setCrewmate', res.data.data)
+                }).finally(() => {
+                    this.lockButtons = false;
+                });
+            },
             fillData() {
                 this.datacollection = {
                     labels: [this.$t('mainPage.strength'), this.$t('mainPage.dexterity'), this.$t('mainPage.intelligence'), this.$t('mainPage.experience'), this.$t('mainPage.condition')],

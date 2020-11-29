@@ -4,6 +4,7 @@ export default {
   //side menu
   sideMenu: {
     summary: "Podsumowanie",
+    tasks: "Dziennik zadań",
     crewList: "Lista załogi",
     captainPanel: "Panel kapitański",
     medBay: "Klinika",
@@ -106,6 +107,51 @@ export default {
     }
   },
 
+  tasks: {
+    new: "Nowy",
+    processing: "Procesowany",
+    done: "Zakończony",
+
+    low: "Niski",
+    medium: "Średni",
+    high: "Wysoki",
+
+    engine_check: "Cykliczne sprawdzenie silników",
+    engine_calibrations: "Kalibracja silników",
+    engine_issue: "Problem z napędem",
+    medical_treatment: "Zabieg medyczny",
+    nurse_help: "Pomoc pielęgniarska",
+    ship_navigation: "Nawigowanie",
+    ship_driving: "Pilotowanie statku",
+  },
+
+  taskPage: {
+    title: "Lista zadań",
+    ship : "Statek",
+    crewName: "Załogant",
+    crewDepartment: "Dział załoganta",
+    crewTasks: "Zadania  załoganta",
+    crewActions: "Akcje",
+    details: "Detale",
+    edit: "Edytuj",
+    remove: "Exterminuj",
+    add: "Dodaj",
+    status: "Status",
+    code: "Zadanie",
+    priority: "Priorerytet",
+    assignee: "Realizujący",
+    assign: "Przypisz się",
+    reporter: "Zgłaszający",
+
+    process: "Procesuj",
+    done: "Zakończ",
+
+    popupRemove: {
+      title: "Czy chcesz dokonać ekterminacji {0}?",
+      description: "Akcja jest nieodwracalna!",
+    }
+  },
+
   popup: {
     confirm: "Potwierdzam",
     cancel: "Anuluj"
@@ -126,6 +172,7 @@ export default {
   },
 
   editCrew: {
+    assign: 'Przypisz',
     title: "Edycja członka załogi: {0}",
     name: 'Imię',
     lastName: 'Nazwisko',

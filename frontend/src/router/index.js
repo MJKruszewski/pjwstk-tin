@@ -14,39 +14,56 @@ import NoPermissionPage from "../components/technical/NoPermissionPage";
 import NotFoundPage from "../components/technical/NotFoundPage";
 import CrewDetailsPage from "../components/crew/CrewDetailsPage";
 import RegisterPage from "../components/auth/RegisterPage";
+import {localStore} from '../main'
+import {isRolePresent} from "../api/crewmates";
+import TaskPage from "../components/tasks/TaskPage";
+import {getMe} from "../api/login";
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
       name: 'LoginPage',
       component: LoginPage,
       meta: {
+        requiresAuth: false,
+        roles: []
       }
     },    {
       path: '/register',
       name: 'registerPage',
       component: RegisterPage,
       meta: {
+        requiresAuth: false,
+        roles: []
       }
     },
     {
       path: '*',
       component: NotFoundPage,
       meta: {
+        requiresAuth: false,
+        roles: []
       }
     },
     {
       path: '/no-permission',
       component: NoPermissionPage,
-
+      meta: {
+        requiresAuth: false,
+        roles: []
+      }
     },
     {
       path: '/space-ship',
       name: 'SpaceshipPage',
       component: SpaceshipPage,
+      meta: {
+        requiresAuth: true,
+        roles: []
+      },
       children: [
         {
           path: '/space-ship/summary',
@@ -54,6 +71,8 @@ export default new Router({
           component: MainPage,
           meta: {
             sideMenuName: 'summary',
+            requiresAuth: true,
+            roles: []
           }
         },
         {
@@ -62,6 +81,11 @@ export default new Router({
           component: CaptainPage,
           meta: {
             sideMenuName: 'captainPanel',
+            requiresAuth: true,
+            roles: [
+              'captain',
+              'secretary',
+            ]
           }
 
         },
@@ -71,8 +95,21 @@ export default new Router({
           component: CrewPage,
           meta: {
             sideMenuName: 'crewList',
+            requiresAuth: true,
+            roles: [
+            ]
           }
-
+        },
+        {
+          path: '/space-ship/tasks',
+          name: 'tasks',
+          component: TaskPage,
+          meta: {
+            sideMenuName: 'tasks',
+            requiresAuth: true,
+            roles: [
+            ]
+          }
         },
         {
           path: '/space-ship/crew/details/:id',
@@ -80,6 +117,8 @@ export default new Router({
           component: CrewDetailsPage,
           meta: {
             sideMenuName: 'crewList',
+            requiresAuth: true,
+            roles: []
           }
         },
         {
@@ -88,6 +127,11 @@ export default new Router({
           component: EditCrewPage,
           meta: {
             sideMenuName: 'crewList',
+            requiresAuth: true,
+            roles: [
+              'captain',
+              'secretary',
+            ]
           }
         },
         {
@@ -96,6 +140,10 @@ export default new Router({
           component: AddCrewPage,
           meta: {
             sideMenuName: 'crewList',
+            requiresAuth: true,
+            roles: [
+              'captain'
+            ]
           }
         },
         {
@@ -104,6 +152,12 @@ export default new Router({
           component: ClinicPage,
           meta: {
             sideMenuName: 'medBay',
+            requiresAuth: true,
+            roles: [
+              'captain',
+              'medic',
+              'nurse',
+            ]
           }
 
         },
@@ -113,6 +167,13 @@ export default new Router({
           component: EngineersPage,
           meta: {
             sideMenuName: 'engineersRoom',
+            requiresAuth: true,
+            roles: [
+              'captain',
+              'engineer',
+              'programmer',
+              'calibrator',
+            ]
           }
 
         },
@@ -122,10 +183,56 @@ export default new Router({
           component: NavigationPage,
           meta: {
             sideMenuName: 'navigationRoom',
+            requiresAuth: true,
+            roles: [
+              'captain',
+              'pilot',
+              'navigator',
+            ]
           }
-
         },
       ]
     },
   ]
-})
+});
+
+router.beforeEach(async (to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+
+    await getMe().then((res) => {
+      localStore.dispatch('setCrewmate', res.data.data)
+    }).catch((res) => {
+      next({
+        path: '/',
+      })
+    });
+
+    if (
+      localStore.state.user.id === null
+      || localStore.state.session.expireAt === null
+      || localStore.state.session.token === null
+      || new Date(localStore.state.session.expireAt) < new Date()
+    ) {
+      next({
+        path: '/',
+      })
+    } else {
+      if (to.meta.roles.length > 0) {
+        if (isRolePresent(to.meta.roles)) {
+          next()
+        } else {
+          next({
+            name: 'summary'
+          })
+        }
+      } else {
+        next()
+      }
+    }
+  } else {
+    next()
+  }
+});
+
+
+export default router;

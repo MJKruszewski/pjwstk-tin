@@ -9,6 +9,7 @@ use App\Entity\AuthorizationToken;
 use App\Repository\AuthorizationTokenRepository;
 use App\Repository\CrewmateRepository;
 use App\Singleton\Encrypt;
+use App\Singleton\LoggedCrewmate;
 use Doctrine\ORM\NoResultException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -46,20 +47,7 @@ class TokenController extends AbstractController
     }
 
     /**
-     * @Route(name="me", path="api/v1/auth/me")
-     * @return JsonResponse
-     */
-    public function me(): JsonResponse
-    {
-        return new JsonResponse(
-            [
-                'data' => $this->crewmateRepository->find($id)
-            ]
-        );
-    }
-
-    /**
-     * @Route(name="login", path="api/v1/auth/login")
+     * @Route(name="login", path="api/v1/auth/login", methods={"POST","OPTIONS","HEAD"})
      * @param Request $request
      * @return JsonResponse
      * @throws \Exception
@@ -87,6 +75,10 @@ class TokenController extends AbstractController
                 'password' => $password,
             ]);
         } catch (NoResultException $e) {
+            return new JsonResponse(['code' => 'not-found'], 404);
+        }
+
+        if($crewmate === null) {
             return new JsonResponse(['code' => 'not-found'], 404);
         }
 

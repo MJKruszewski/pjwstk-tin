@@ -26,6 +26,7 @@ export const localStore = new Vuex.Store({
       expireAt: null,
     },
     user: {
+      id: null,
       name: "Guest",
       lastName: "Guest",
       role: 'captain',

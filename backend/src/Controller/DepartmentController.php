@@ -26,7 +26,7 @@ class DepartmentController extends AbstractController implements TokenAuthentica
     }
 
     /**
-     * @Route(name="departments", path="api/v1/departments")
+     * @Route(name="departments", path="api/v1/departments", methods={"GET","OPTIONS","HEAD"})
      *
      * @return JsonResponse
      */

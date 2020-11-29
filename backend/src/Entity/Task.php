@@ -8,8 +8,40 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=TaskRepository::class)
  */
-class Task
+class Task implements \JsonSerializable
 {
+    const HIGH_PRIORITY = 'high';
+    const MEDIUM_PRIORITY = 'medium';
+    const LOW_PRIORITY = 'low';
+
+    const STATUS_NEW = 'new';
+    const STATUS_PROCESSING = 'processing';
+    const STATUS_DONE = 'done';
+
+    const CODE_ENGINE_CHECK = 'engine_check';
+    const CODE_ENGINE_CALIBRATIONS = 'engine_calibrations';
+    const CODE_ENGINE_ISSUE = 'engine_issue';
+    const CODE_MEDICAL_TREATMENT = 'medical_treatment';
+    const CODE_NURSE_HELP = 'nurse_help';
+    const CODE_SHIP_NAVIGATION = 'ship_navigation';
+    const CODE_SHIP_DRIVING = 'ship_driving';
+
+    const ALL_STATUSES = [
+        self::STATUS_NEW,
+        self::STATUS_PROCESSING,
+        self::STATUS_DONE,
+    ];
+
+    const ALL_CODES = [
+        self::CODE_ENGINE_CHECK,
+        self::CODE_ENGINE_CALIBRATIONS,
+        self::CODE_ENGINE_ISSUE,
+        self::CODE_MEDICAL_TREATMENT,
+        self::CODE_NURSE_HELP,
+        self::CODE_SHIP_NAVIGATION,
+        self::CODE_SHIP_DRIVING,
+    ];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -28,7 +60,7 @@ class Task
     private $status;
 
     /**
-     * @ORM\Column(type="smallint", nullable=true)
+     * @ORM\Column(type="string", length=50)
      */
     private $priority;
 
@@ -51,6 +83,17 @@ class Task
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $finishedAt;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Ship::class, inversedBy="tasks")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $ship;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Station::class, inversedBy="tasks")
+     */
+    private $station;
 
     public function getId(): ?int
     {
@@ -81,12 +124,12 @@ class Task
         return $this;
     }
 
-    public function getPriority(): ?int
+    public function getPriority(): string
     {
         return $this->priority;
     }
 
-    public function setPriority(?int $priority): self
+    public function setPriority(string $priority): self
     {
         $this->priority = $priority;
 
@@ -137,6 +180,57 @@ class Task
     public function setFinishedAt(?\DateTimeInterface $finishedAt): self
     {
         $this->finishedAt = $finishedAt;
+
+        return $this;
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     * @since 5.4.0
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id' => $this->getId(),
+            'code' => $this->getCode(),
+            'assignee' => $this->getAssignee() ? [
+                'id' => $this->getAssignee()->getId(),
+                'name' => $this->getAssignee()->getName(),
+                'lastName' => $this->getAssignee()->getLastName(),
+            ] : null,
+            'priority' => $this->getPriority(),
+            'status' => $this->getStatus(),
+            'reporter' => [
+                'id' => $this->getReporter()->getId(),
+                'name' => $this->getReporter()->getName(),
+                'lastName' => $this->getReporter()->getLastName(),
+            ],
+        ];
+    }
+
+    public function getShip(): ?Ship
+    {
+        return $this->ship;
+    }
+
+    public function setShip(?Ship $ship): self
+    {
+        $this->ship = $ship;
+
+        return $this;
+    }
+
+    public function getStation(): ?Station
+    {
+        return $this->station;
+    }
+
+    public function setStation(?Station $station): self
+    {
+        $this->station = $station;
 
         return $this;
     }

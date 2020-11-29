@@ -28,7 +28,7 @@ class ShipController extends AbstractController implements TokenAuthenticatedInt
     }
 
     /**
-     * @Route(name="ships", path="api/v1/ships")
+     * @Route(name="ships", path="api/v1/ships", methods={"GET","OPTIONS","HEAD"})
      */
     public function getAll(): JsonResponse
     {

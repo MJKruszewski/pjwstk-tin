@@ -9,6 +9,7 @@ use App\Entity\ShipCrewmates;
 use App\Repository\CrewmateRepository;
 use App\Repository\ShipCrewmatesRepository;
 use App\Repository\ShipRepository;
+use App\Singleton\LoggedCrewmate;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -44,7 +45,7 @@ class CrewmateController extends AbstractController implements TokenAuthenticate
     }
 
     /**
-     * @Route(name="crewmates", path="api/v1/ships/{shipId}/crewmates")
+     * @Route(name="crewmates", path="api/v1/ships/{shipId}/crewmates", methods={"GET","OPTIONS","HEAD"})
      * @param int $shipId
      * @return JsonResponse
      */
@@ -62,7 +63,7 @@ class CrewmateController extends AbstractController implements TokenAuthenticate
     }
 
     /**
-     * @Route(name="crewmate", path="api/v1/crewmates/{id}")
+     * @Route(name="crewmate", path="api/v1/crewmates/{id}", methods={"GET","OPTIONS","HEAD"})
      * @param int $id
      * @return JsonResponse
      */
@@ -76,5 +77,24 @@ class CrewmateController extends AbstractController implements TokenAuthenticate
     }
 
 
+
+    /**
+     * @Route(name="me", path="api/v1/auth/me", methods={"GET","OPTIONS","HEAD"})
+     * @return JsonResponse
+     */
+    public function me(): JsonResponse
+    {
+        $crewmate = LoggedCrewmate::getCrewmate();
+
+        if (empty($crewmate)) {
+            return new JsonResponse(['code' => 'unauthorized'], 401);
+        }
+
+        return new JsonResponse(
+            [
+                'data' => $crewmate
+            ]
+        );
+    }
 
 }

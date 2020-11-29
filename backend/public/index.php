@@ -13,7 +13,7 @@ header('Access-Control-Allow-Origin: *');
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Max-Age: 86400");
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
+header("Access-Control-Allow-Methods: POST, PATCH, GET, OPTIONS, PUT, DELETE");
 
 if ($_SERVER['APP_DEBUG']) {
     umask(0000);
