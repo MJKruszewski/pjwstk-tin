@@ -32,6 +32,12 @@ class Task implements \JsonSerializable
         self::STATUS_DONE,
     ];
 
+    const PRIORITIES = [
+      self::LOW_PRIORITY,
+      self::MEDIUM_PRIORITY,
+      self::HIGH_PRIORITY,
+    ];
+
     const ALL_CODES = [
         self::CODE_ENGINE_CHECK,
         self::CODE_ENGINE_CALIBRATIONS,
@@ -65,12 +71,12 @@ class Task implements \JsonSerializable
     private $priority;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Crewmate::class)
+     * @ORM\ManyToOne(targetEntity=Crewmate::class, cascade={"detach"})
      */
     private $reporter;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Crewmate::class, inversedBy="tasks")
+     * @ORM\ManyToOne(targetEntity=Crewmate::class, inversedBy="tasks", cascade={"detach"})
      */
     private $assignee;
 
@@ -203,11 +209,11 @@ class Task implements \JsonSerializable
             ] : null,
             'priority' => $this->getPriority(),
             'status' => $this->getStatus(),
-            'reporter' => [
+            'reporter' => $this->getReporter() ? [
                 'id' => $this->getReporter()->getId(),
                 'name' => $this->getReporter()->getName(),
                 'lastName' => $this->getReporter()->getLastName(),
-            ],
+            ] : null,
         ];
     }
 

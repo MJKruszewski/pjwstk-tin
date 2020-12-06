@@ -20,7 +20,8 @@
                 <label for="name" style="font-weight: bold;">{{ $t('editCrew.name') }}:</label>
               </td>
               <td>
-                <input type="text" id="name" v-model="this.crewmate.name"/>
+                <input :disabled="lockButtons" type="text" id="name" v-model="crewmate.name" :class="{ 'validation-error': $v.crewmate.name.$error }"/>
+                <div class="validation-error-text" v-if="!$v.crewmate.name.minLength">{{ $t('editCrew.validationMinLength', [$v.crewmate.name.$params.minLength.min]) }}</div>
               </td>
             </tr>
             <tr>
@@ -28,17 +29,18 @@
                 <label for="last_name" style="font-weight: bold;">{{ $t('editCrew.lastName') }}:</label>
               </td>
               <td>
-                <input type="text" id="last_name" v-model="this.crewmate.lastName"/>
+                <input :disabled="lockButtons" type="text" id="last_name" v-model="crewmate.lastName" :class="{ 'validation-error': $v.crewmate.lastName.$error }" />
+                <div class="validation-error-text" v-if="!$v.crewmate.lastName.minLength">{{ $t('editCrew.validationMinLength', [$v.crewmate.lastName.$params.minLength.min]) }}</div>
               </td>
             </tr>
             <tr>
               <td>
-                <label for="ship">{{ $t('crewPage.ship')}}</label>
+                <label for="ship" style="font-weight: bold;">{{ $t('crewPage.ship')}}</label>
               </td>
               <td>
-                <select id="ship">
+                <select :disabled="lockButtons" id="ship" v-model="crewmate.ship.id" :class="{ 'validation-error': $v.crewmate.ship.id.$error }">
                   <template v-for="item in this.ships">
-                    <option :id="item.id">
+                    <option :value="item.id">
                       {{ item.name }}
                     </option>
                   </template>
@@ -50,7 +52,9 @@
                 <label for="login" style="font-weight: bold;">{{ $t('editCrew.login') }}:</label>
               </td>
               <td>
-                <input type="text" id="login" v-model="crewmate.login"/>
+                <input :disabled="lockButtons" type="text" id="login" v-model="crewmate.login" :class="{ 'validation-error': $v.crewmate.login.$error }"/>
+                <div class="validation-error-text" v-if="!$v.crewmate.login.minLength">{{ $t('editCrew.validationMinLength', [$v.crewmate.login.$params.minLength.min]) }}</div>
+                <div class="validation-error-text" v-if="loginTaken">{{ $t('editCrew.loginTaken') }}</div>
               </td>
             </tr>
             <tr>
@@ -58,7 +62,8 @@
                 <label for="password" style="font-weight: bold;">{{ $t('editCrew.password') }}:</label>
               </td>
               <td>
-                <input type="password" id="password" v-model="crewmate.password"/>
+                <input :disabled="lockButtons" type="password" id="password" v-model="crewmate.password" :class="{ 'validation-error': $v.crewmate.password.$error }"/>
+                <div class="validation-error-text" v-if="!$v.crewmate.password.minLength">{{ $t('editCrew.validationMinLength', [$v.crewmate.password.$params.minLength.min]) }}</div>
               </td>
             </tr>
             <tr>
@@ -66,7 +71,7 @@
                 <label for="department_id" style="font-weight: bold;">{{ $t('editCrew.department') }}:</label>
               </td>
               <td>
-                <select id="department_id" v-model="crewmate.mainDepartment">
+                <select :disabled="lockButtons" id="department_id" v-model="crewmate.mainDepartment.id" :class="{ 'validation-error': $v.crewmate.mainDepartment.id.$error }">
                   <template v-for="item in departments">
                     <option :value="item.id">{{ $t('departments.' + item.code)  }}</option>
                   </template>
@@ -79,7 +84,7 @@
                 <label for="strength" style="font-weight: bold;">{{ $t('editCrew.strength') }}:</label>
               </td>
               <td>
-                <input id="strength" type="range" min="0" value="0" max="10" v-model="crewmate.stats.strength"/>
+                <input :disabled="lockButtons" id="strength" type="range" min="0" value="0" max="10" v-model="crewmate.stats.strength"/>
               </td>
             </tr>
             <tr>
@@ -87,7 +92,7 @@
                 <label for="dexterity" style="font-weight: bold;">{{ $t('editCrew.dexterity') }}:</label>
               </td>
               <td>
-                <input id="dexterity" type="range" min="0" value="0" max="10" v-model="crewmate.stats.dexterity"/>
+                <input :disabled="lockButtons" id="dexterity" type="range" min="0" value="0" max="10" v-model="crewmate.stats.dexterity"/>
               </td>
             </tr>
             <tr>
@@ -95,7 +100,7 @@
                 <label for="intelligence" style="font-weight: bold;">{{ $t('editCrew.intelligence') }}:</label>
               </td>
               <td>
-                <input id="intelligence" type="range" min="0" value="0" max="10" v-model="crewmate.stats.intelligence"/>
+                <input :disabled="lockButtons" id="intelligence" type="range" min="0" value="0" max="10" v-model="crewmate.stats.intelligence"/>
               </td>
             </tr>
             <tr>
@@ -103,7 +108,7 @@
                 <label for="experience" style="font-weight: bold;">{{ $t('editCrew.experience') }}:</label>
               </td>
               <td>
-                <input id="experience" type="range" min="0" value="0" max="10" v-model="crewmate.stats.experience"/>
+                <input :disabled="lockButtons" id="experience" type="range" min="0" value="0" max="10" v-model="crewmate.stats.experience"/>
               </td>
             </tr>
             <tr>
@@ -111,7 +116,7 @@
                 <label for="condition" style="font-weight: bold;">{{ $t('editCrew.condition') }}:</label>
               </td>
               <td>
-                <input id="condition" type="range" min="0" value="0" max="10" v-model="crewmate.stats.physicalCondition"/>
+                <input :disabled="lockButtons" id="condition" type="range" min="0" value="0" max="10" v-model="crewmate.stats.physicalCondition"/>
               </td>
             </tr>
           </table>
@@ -130,6 +135,9 @@
     import chartOptions from "./../utils/chartOptions";
     import {getAllShips} from "../../api/ships";
     import {getAllDepartments} from "../../api/departments";
+    import {postCrewmate} from "../../api/crewmates";
+    import { required, minLength, between } from 'vuelidate/lib/validators'
+
     export default {
         name: "AddCrewPage",
         components: {StatsChart},
@@ -140,24 +148,86 @@
         data() {
             return {
                 ships: [],
+                loginTaken: false,
                 departments: [],
+                lockButtons: false,
                 crewmate: {
                     name: null,
                     login: null,
                     password: null,
-                    mainDepartment: null,
+                    mainDepartment: {
+                        code: null,
+                        id: null,
+                    },
+                    ship: {
+                        id: null,
+                    },
                     stats: {
-                        strength: null,
-                        dexterity: null,
-                        intelligence: null,
-                        experience: null,
-                        physicalCondition: null,
+                        strength: 1,
+                        dexterity: 1,
+                        intelligence: 1,
+                        experience: 1,
+                        physicalCondition: 1,
                     },
                     lastName: null,
                     stations: [],
                 },
                 datacollection: null,
                 options: chartOptions,
+            }
+        },
+        validations: {
+            crewmate: {
+                name: {
+                    required,
+                    minLength: minLength(3)
+                },
+                lastName: {
+                    required,
+                    minLength: minLength(3)
+                },
+                login: {
+                    required,
+                    minLength: minLength(5)
+                },
+                password: {
+                    required,
+                    minLength: minLength(5)
+                },
+                mainDepartment: {
+                    id: {
+                        required,
+                        minLength: minLength(1)
+                    },
+                },
+                ship: {
+                    id: {
+                        required,
+                        minLength: minLength(1)
+                    },
+                },
+                stats: {
+                    strength: {
+                        required,
+                        between: between(1, 10)
+                    },
+                    dexterity: {
+                        required,
+                        between: between(1, 10)
+                    },
+                    intelligence: {
+                        required,
+                        between: between(1, 10)
+                    },
+                    experience: {
+                        required,
+                        between: between(1, 10)
+                    },
+                    physicalCondition: {
+                        required,
+                        between: between(1, 10)
+                    },
+                },
             }
         },
         watch: {
@@ -193,7 +263,41 @@
               return this.displayChart;
             },
             save() {
+                this.loginTaken = false;
+                this.$v.$touch();
 
+                if (this.$v.$invalid) {
+                    return;
+                }
+
+                this.lockButtons = true;
+
+                postCrewmate({
+                    name: this.crewmate.name,
+                    lastName: this.crewmate.lastName,
+                    login: this.crewmate.login,
+                    password: this.crewmate.password,
+                    departmentId: Number.parseInt(this.crewmate.mainDepartment.id),
+                    shipId: Number.parseInt(this.crewmate.ship.id),
+                    strength: Number.parseInt(this.crewmate.stats.strength),
+                    dexterity: Number.parseInt(this.crewmate.stats.dexterity),
+                    intelligence: Number.parseInt(this.crewmate.stats.intelligence),
+                    experience: Number.parseInt(this.crewmate.stats.experience),
+                    physicalCondition: Number.parseInt(this.crewmate.stats.physicalCondition),
+                }).then((res) => {
+                    if (this.backPage) {
+                        this.$router.push({ name: this.backPage});
+                    } else {
+                        this.$router.push({ name: 'crewEdit', params: { id: res.data.data.id } })
+                    }
+                }).catch((res) => {
+                    console.log(res)
+                    if (res.response.status === 409){
+                        this.loginTaken = true;
+                    }
+                }).finally(() => {
+                    this.lockButtons = false;
+                });
             },
             fillData() {
                 this.datacollection = {

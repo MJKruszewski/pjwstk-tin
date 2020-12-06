@@ -8,7 +8,8 @@ import localization from './localizaiton'
 import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import * as Cookies from 'js-cookie'
-
+import Vuelidate from 'vuelidate'
+Vue.use(Vuelidate)
 Vue.use(Vuex);
 Vue.use(VueI18n);
 Vue.config.productionTip = false;

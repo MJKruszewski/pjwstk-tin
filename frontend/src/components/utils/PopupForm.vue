@@ -8,8 +8,8 @@
         <slot></slot>
       </div>
       <div style="padding-top: 14%">
-        <button class="success" v-on:click="$emit('popup-confirm')">{{ $t("popup.confirm") }}</button>
-        <button class="danger" v-on:click="$emit('popup-cancel')">{{ $t("popup.cancel") }}</button>
+        <button :disabled="lockButton" :class="{ 'disabled-button': lockButton}"  class="success" v-on:click="$emit('popup-confirm')">{{ $t("popup.confirm") }}</button>
+        <button :disabled="lockButton" :class="{ 'disabled-button': lockButton}"  class="danger" v-on:click="$emit('popup-cancel')">{{ $t("popup.cancel") }}</button>
       </div>
     </div>
   </div>
@@ -21,6 +21,7 @@
         props: {
             title: String,
             display: Boolean,
+            lockButton: Boolean,
         }
     }
 </script>

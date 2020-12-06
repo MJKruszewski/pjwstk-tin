@@ -26,7 +26,7 @@
         </tr>
       </thead>
       <transition-group name="list" tag="tbody">
-        <tr :key="'loading'" v-if="departments.length === 0">
+        <tr :key="'loading'" v-if="departments === null">
           <td>Loading ...</td>
           <td></td>
           <td></td>
@@ -49,6 +49,17 @@
       </transition-group>
     </table>
 
+    <br/>
+    <div style="text-align: center">
+      <button style="float: left" v-on:click="$emit('prev')" :disabled="pagination.page <= 0" :class="{ 'disabled-button': pagination.page <= 0}">{{ $t('prev') }}</button>
+
+      <div style="display: inline;text-align: center">
+        {{ pagination.page + 1 }} / {{ pagination.totalPages + 1}}
+      </div>
+
+      <button v-on:click="$emit('next')" :class="{ 'disabled-button': pagination.page >= pagination.totalPages}" :disabled="pagination.page >= pagination.totalPages" style="float: right">{{ $t('next') }}</button>
+    </div>
+
     <PopupForm
       :title="popupForm.title"
       :display="popupForm.display"
@@ -61,7 +72,8 @@
             <label for="code">{{ $t('mainPage.code') }}:</label>
           </td>
           <td>
-            <input v-model="popupForm.code" type="text" id="code"/>
+            <input v-model="popupForm.code" type="text" id="code" :class="{ 'validation-error': $v.popupForm.code.$error }"/>
+            <div class="validation-error-text" v-if="!$v.popupForm.code.minLength">{{ $t('editCrew.validationMinLength', [$v.popupForm.code.$params.minLength.min]) }}</div>
           </td>
         </tr>
       </table>
@@ -79,6 +91,9 @@
 <script>
     import Popup from "../utils/Popup";
     import PopupForm from "../utils/PopupForm";
+    import {deleteDepartment, patchDepartment, postDepartment} from "../../api/departments";
+    import { required, minLength, between } from 'vuelidate/lib/validators'
+
     export default {
         name: 'Departments',
         components: {PopupForm, Popup},
@@ -86,11 +101,14 @@
             showActions: false,
             captainView: false,
             departments: Array,
+            pagination: Object,
         },
         data() {
             return {
+                lockButtons: false,
                 popupForm: {
                     display: false,
+                    createNew: false,
                     title: null,
                     id: null,
                     code: null,
@@ -103,13 +121,33 @@
                 }
             }
         },
+        validations: {
+            popupForm: {
+                code: {
+                    required,
+                    minLength: minLength(3),
+                },
+            },
+        },
         methods: {
+            prevPage() {
+                this.$emit('prev')
+            },
+            nextPage() {
+              this.$emit('next')
+            },
             popupCancel() {
                 console.log(this.popup.mate)
                 this.popup.display = false;
             },
             popupConfirm() {
-                console.log(this.popup.mate)
+                this.lockButtons=true;
+                deleteDepartment(this.popup.mate.id).then(() => {
+                    this.$emit('reload')
+                }).finally(()=>{
+                    this.lockButtons=false;
+                    this.popup.display = false;
+                });
             },
             showCreate() {
                 this.popupForm.title = this.$t('captainPage.addDepartment');
@@ -117,27 +155,54 @@
                 this.popupForm.code = null;
                 this.popupForm.department = null;
                 this.popupForm.display = true
+                this.popupForm.createNew = true
             },
             showEdit(item) {
                 this.popupForm.title = this.$t('captainPage.editDepartment');
                 this.popupForm.id = item.id;
                 this.popupForm.code = item.code;
                 this.popupForm.display = true
+                this.popupForm.createNew = false
             },
             saveCancel() {
-                console.log(this.popup.mate);
                 this.popupForm.display = false;
             },
             saveConfirm() {
-                console.log(this.popup.mate)
+                this.$v.popupForm.$touch();
+
+                if (this.$v.popupForm.$invalid) {
+                    return;
+                }
+
+                this.lockButtons=true;
+
+                if (this.popupForm.createNew) {
+                    postDepartment({
+                        code: this.popupForm.code,
+                    }).then(() => {
+                        this.$emit('reload')
+                    }).finally(()=>{
+                        this.lockButtons=false;
+                        this.popupForm.display = false;
+                    });
+                } else {
+                    patchDepartment(this.popupForm.id, {
+                        code: this.popupForm.code,
+                    }).then(() => {
+                        this.$emit('reload')
+                    }).finally(()=>{
+                        this.lockButtons=false;
+                        this.popupForm.display = false;
+                    });
+                }
             },
             reloadTasks() {
-                console.log('reloading')
+                this.$emit('reload')
             },
             showPopup(item) {
                 this.popup.title = this.$t("captainPage.removeDepartment");
                 this.popup.display = true;
-                this.popup.mate = mate;
+                this.popup.mate = item;
             },
         }
     }

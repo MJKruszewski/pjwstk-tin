@@ -30,7 +30,7 @@
   .popup-box {
     background-color: #c1c9ccc9;
     width: 400px;
-    height: 175px;
+    height: auto;
     text-align: center;
 
     margin: 10% auto auto;

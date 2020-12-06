@@ -36,7 +36,7 @@
       </tr>
       </thead>
       <transition-group name="list" tag="tbody">
-        <tr :key="'loading'" v-if="stations.length === 0">
+        <tr :key="'loading'" v-if="stations === null">
           <td>Loading ...</td>
           <td></td>
           <td></td>
@@ -72,6 +72,17 @@
       </transition-group>
     </table>
 
+    <br/>
+    <div v-if="showPagination" style="text-align: center">
+      <button  style="float: left"  v-on:click="$emit('prev')" :disabled="pagination.page <= 0" :class="{ 'disabled-button': pagination.page <= 0}">{{ $t('prev') }}</button>
+
+      <div style="display: inline;text-align: center">
+        {{ pagination.page + 1 }} / {{ pagination.totalPages + 1}}
+      </div>
+
+      <button v-on:click="$emit('next')" :class="{ 'disabled-button': pagination.page >= pagination.totalPages}" :disabled="pagination.page >= pagination.totalPages" style="float: right">{{ $t('next') }}</button>
+    </div>
+
     <PopupForm
       :title="popupForm.title"
       :display="popupForm.display"
@@ -84,7 +95,8 @@
             <label for="code">{{ $t('mainPage.code') }}:</label>
           </td>
           <td>
-            <input v-model="popupForm.code" type="text" id="code"/>
+            <input :disabled="this.lockButtons" v-model="popupForm.code" type="text" id="code" :class="{ 'validation-error': $v.popupForm.code.$error }"/>
+            <div class="validation-error-text" v-if="!$v.popupForm.code.minLength">{{ $t('editCrew.validationMinLength', [$v.popupForm.code.$params.minLength.min]) }}</div>
           </td>
         </tr>
         <tr>
@@ -92,7 +104,7 @@
             <label for="department">{{ $t('editCrew.department') }}:</label>
           </td>
           <td>
-            <select v-model="popupForm.department" id="department">
+            <select :disabled="this.lockButtons" v-model="popupForm.department" id="department" :class="{ 'validation-error': $v.popupForm.department.$error }">
               <template v-for="item in allDepartments">
                 <option :value="item.id">
                   {{ $t('departments.' + item.code) }}
@@ -116,7 +128,7 @@
             <label for="id">{{ $t('mainPage.code') }}:</label>
           </td>
           <td>
-            <select id="id" v-model="popupAssign.id">
+            <select :disabled="this.lockButtons" id="id" v-model="popupAssign.id"  :class="{ 'validation-error': $v.popupAssign.id.$error }">
               <template v-for="item in allStations">
                 <option :value="item.id">
                   {{ $t('stations.' + item.code) }}
@@ -130,7 +142,7 @@
             <label for="from">{{ $t('editCrew.from') }}:</label>
           </td>
           <td>
-            <input type="date" v-model="popupAssign.from" id="from"/>
+            <input :disabled="this.lockButtons" type="date" v-model="popupAssign.from" id="from" :class="{ 'validation-error': $v.popupAssign.from.$error }"/>
           </td>
         </tr>
       </table>
@@ -148,8 +160,16 @@
 <script>
     import Popup from "../utils/Popup";
     import PopupForm from "../utils/PopupForm";
-    import {getAllStations, postCrewmateStation} from "../../api/stations";
+    import {
+        deleteStation,
+        getAllStations,
+        patchStation,
+        postCrewmateStation,
+        postResign,
+        postStation
+    } from "../../api/stations";
     import {getAllDepartments} from "../../api/departments";
+    import { required, minLength, between } from 'vuelidate/lib/validators'
 
     export default {
         name: 'Stations',
@@ -157,19 +177,23 @@
         props: {
             captainView: false,
             lockReload: false,
+            showPagination: false,
             allowSetStation: false,
             userView: false,
             stations: null,
+            pagination: Object,
         },
         data() {
             return {
                 allStations: [],
+                lockButtons: false,
                 allDepartments: [],
                 new: {
                     station: null,
                 },
                 popupForm: {
                     display: false,
+                    createNew: false,
                     title: null,
                     id: null,
                     code: null,
@@ -189,6 +213,25 @@
                 }
             }
         },
+        validations: {
+            popupForm: {
+                code: {
+                    required,
+                    minLength: minLength(3),
+                },
+                department: {
+                    required,
+                },
+            },
+            popupAssign: {
+                from: {
+                    required,
+                },
+                id: {
+                    required,
+                },
+            }
+        },
         async beforeMount() {
             getAllDepartments().then((res) => {
                 this.allDepartments = res.data.data
@@ -202,22 +245,41 @@
         },
         methods: {
             terminate(item) {
-                item.to = new Date();
+                postResign(this.$route.params.id, item.id).then(()=>{
+                    this.$emit('reload')
+                });
             },
             popupCancel() {
-                console.log(this.popup.mate)
                 this.popup.display = false;
             },
             popupConfirm() {
-                console.log(this.popup.mate)
+                this.lockButtons=true;
+                deleteStation(this.popup.mate.id).then(() => {
+                    this.$emit('reload')
+                }).finally(()=>{
+                    this.lockButtons=false;
+                    this.popup.display = false;
+                });
             },
             assignCancel() {
                 this.popupAssign.display = false;
             },
             assignConfirm() {
+                this.$v.popupAssign.$touch();
+
+                if (this.$v.popupAssign.$invalid) {
+                    return;
+                }
+
+                this.lockButtons=true;
                 postCrewmateStation(this.$route.params.id, this.popupAssign.id, this.popupAssign.from).then((res) => {
-                    this.popup.display = false;
-                })
+                    this.popupAssign.display = false;
+                }).then(() => {
+                    this.$emit('reload')
+                }).finally(()=>{
+                    this.lockButtons=false;
+                    this.popupAssign.display = false;
+                });
             },
             showCreate() {
                 this.popupForm.title = this.$t('captainPage.addStation');
@@ -225,6 +287,7 @@
                 this.popupForm.code = null;
                 this.popupForm.department = null;
                 this.popupForm.display = true
+                this.popupForm.createNew = true
             },
 
             showAssign() {
@@ -240,22 +303,50 @@
                 this.popupForm.code = item.code;
                 this.popupForm.department = item.department.id;
                 this.popupForm.display = true
+                this.popupForm.createNew = false
             },
 
             saveCancel() {
-                console.log(this.popup.mate);
                 this.popupForm.display = false;
             },
             saveConfirm() {
-                console.log(this.popup.mate)
+                this.$v.popupForm.$touch();
+
+                if (this.$v.popupForm.$invalid) {
+                    return;
+                }
+
+                this.lockButtons=true;
+
+                if (this.popupForm.createNew) {
+                    postStation({
+                        code: this.popupForm.code,
+                        departmentId: this.popupForm.department,
+                    }).then(() => {
+                        this.$emit('reload')
+                    }).finally(()=>{
+                        this.lockButtons=false;
+                        this.popupForm.display = false;
+                    });
+                } else {
+                    patchStation(this.popupForm.id, {
+                        code: this.popupForm.code,
+                        departmentId: this.popupForm.department,
+                    }).then(() => {
+                        this.$emit('reload')
+                    }).finally(()=>{
+                        this.lockButtons=false;
+                        this.popupForm.display = false;
+                    });
+                }
             },
             reloadTasks() {
-                console.log('reloading')
+                this.$emit('reload')
             },
             showPopupRemove(item) {
                 this.popup.title = this.$t("captainPage.removeStation");
                 this.popup.display = true;
-                this.popup.mate = mate;
+                this.popup.mate = item;
             },
         }
     }

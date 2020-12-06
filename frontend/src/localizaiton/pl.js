@@ -142,7 +142,8 @@ export default {
     assignee: "Realizujący",
     assign: "Przypisz się",
     reporter: "Zgłaszający",
-
+    station: "Stanowisko",
+    popupTitle: "Dodaj zadanie",
     process: "Procesuj",
     done: "Zakończ",
 
@@ -171,10 +172,16 @@ export default {
     removeDepartment: "Usuń dział",
   },
 
+  next: "Dalej",
+  prev: "Wstecz",
+
   editCrew: {
     assign: 'Przypisz',
     title: "Edycja członka załogi: {0}",
+    validationMinLength: "Conajmniej {0} znaków",
+    validationBetween: "Pomiędzy {0} a {1} znaków",
     name: 'Imię',
+    loginTaken: 'Login zajęty',
     lastName: 'Nazwisko',
     department: 'Dział',
     strength: 'Siła',

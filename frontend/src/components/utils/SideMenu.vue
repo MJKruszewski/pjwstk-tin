@@ -50,28 +50,12 @@
                         roles: []
                     },
                     {
-                        title: 'medBay',
-                        roles: [
-                            'captain',
-                            'medic',
-                            'nurse',
-                        ]
-                    },
-                    {
                         title: 'engineersRoom',
                         roles: [
                             'captain',
                             'engineer',
                             'programmer',
                             'calibrator',
-                        ]
-                    },
-                    {
-                        title: 'navigationRoom',
-                        roles: [
-                            'captain',
-                            'pilot',
-                            'navigator',
                         ]
                     },
                 ],

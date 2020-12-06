@@ -36,9 +36,19 @@
     margin: 10px 0;
     appearance: none;
     transition: border-color .2s,box-shadow .2s;
-    min-width: 240px;
+    min-width: 265px;
   }
 
+  select.validation-error,
+  input.validation-error {
+    border: 1px solid #e03225;
+  }
+
+  .validation-error-text {
+    color: #e03225;
+    font-weight: bold;
+    font-size: 11px;
+  }
 
   select {
     font-size: 14px;
@@ -51,7 +61,7 @@
     line-height: normal;
     margin: 10px 0;
     transition: border-color .2s, box-shadow .2s;
-    min-width: 240px;
+    min-width: 265px;
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;

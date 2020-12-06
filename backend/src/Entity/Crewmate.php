@@ -50,19 +50,15 @@ class Crewmate implements \JsonSerializable
     private $crewmateStations;
 
     /**
-     * @ORM\OneToMany(targetEntity=Task::class, mappedBy="assignee")
+     * @ORM\OneToMany(targetEntity=Task::class, mappedBy="assignee", cascade={"detach"})
      */
     private $tasks;
 
     /**
-     * @ORM\OneToMany(targetEntity=ShipCrewmates::class, mappedBy="crewmate")
+     * @ORM\OneToMany(targetEntity=ShipCrewmates::class, mappedBy="crewmate", orphanRemoval=true)
      */
     private $shipCrewmates;
 
-    /**
-     * @ORM\Column(type="string", length=50)
-     */
-    private $role;
 
     /**
      * @ORM\Column(type="datetime")
@@ -213,18 +209,6 @@ class Crewmate implements \JsonSerializable
         return $this;
     }
 
-    public function getRole(): ?string
-    {
-        return $this->role;
-    }
-
-    public function setRole(string $role): self
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
@@ -267,7 +251,26 @@ class Crewmate implements \JsonSerializable
      */
     public function getShip(): ?Ship
     {
-        return $this->shipCrewmates->first() ?? [];
+        return $this->shipCrewmates->first()->getShip() ?? null;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getShipCrewmates()
+    {
+        return $this->shipCrewmates;
+    }
+
+    /**
+     * @param mixed $shipCrewmate
+     */
+    public function setShipCrewmates($shipCrewmate): void
+    {
+        if (!$this->shipCrewmates->contains($shipCrewmate)) {
+            $this->shipCrewmates[] = $shipCrewmate;
+            $shipCrewmate->setCrewmate($this);
+        }
     }
 
     /**
@@ -280,14 +283,15 @@ class Crewmate implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-
             'id' => $this->id,
             'name' => $this->name,
             'lastName' => $this->lastName,
             'login' => $this->login,
             'stats' => $this->crewmateStats,
             'stations' => $this->crewmateStations->getValues() ?? [],
-            'tasks' => $this->tasks->getValues() ?? [],
+            'tasks' => array_filter($this->tasks->getValues() ?? [], function (Task $task) {
+                    return $task->getStatus() !== Task::STATUS_DONE;
+                }) ?? [],
             'roles' => array_map(function (CrewmateStations $crewmateStations) {
                 return $crewmateStations->getStation()->getCode();
             }, array_filter($this->getCrewmateStations()->toArray(), function (CrewmateStations $crewmateStations) {

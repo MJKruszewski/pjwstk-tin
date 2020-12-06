@@ -30,7 +30,11 @@
           <template v-for="task,key in tasks">
             <tr :key="key">
               <td>{{ $t("tasks." + task.code) }}</td>
-              <td>{{ task.reporter.name }} {{ task.reporter.lastName }}</td>
+              <td>
+                <template v-if="task.reporter">
+                  {{ task.reporter.name }} {{ task.reporter.lastName }}
+                </template>
+              </td>
               <td>{{ $t("tasks." + task.status) }}</td>
               <td>{{ $t("tasks." + task.priority) }}</td>
               <td>

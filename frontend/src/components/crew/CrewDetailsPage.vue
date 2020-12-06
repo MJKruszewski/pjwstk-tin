@@ -17,7 +17,9 @@
       <TaskLog :tasks="tasks"/>
     </div>
     <div class="col-9" style="padding-top: 0;">
-      <Stations :stations="crewmate.stations" :user-view="true" />
+      <Stations
+        :show-pagination="false"
+        :stations="crewmate.stations" :user-view="true" />
     </div>
 
     <div class="col-12">

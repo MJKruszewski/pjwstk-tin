@@ -29,7 +29,7 @@
         </thead>
 
         <transition-group name="list" tag="tbody">
-          <tr :key="'loading'" v-if="crew.length === 0">
+          <tr :key="'loading'" v-if="crew === null">
             <td>Loading ...</td>
             <td></td>
             <td></td>
@@ -43,13 +43,27 @@
               <td>todo</td>
               <td>
                 <button class="info" v-on:click="detailsRedirect(mate.id)">{{ $t('crewPage.details') }}</button>
-                <button class="warning" v-on:click="editRedirect(mate.id)">{{ $t('crewPage.edit') }}</button>
-                <button class="danger" v-on:click="showPopup(mate)">{{ $t('crewPage.remove') }}</button>
+                <button class="warning" v-if="showButtons()" v-on:click="editRedirect(mate.id)">{{ $t('crewPage.edit') }}</button>
+                <button class="danger" v-if="showButtons()" v-on:click="showPopup(mate)">{{ $t('crewPage.remove') }}</button>
               </td>
             </tr>
           </template>
         </transition-group>
       </table>
+
+      <br/>
+      <div style="text-align: center">
+        <button style="float: left" v-on:click="firstPage" :disabled="pagination.page <= 0 || lockButtons" :class="{ 'disabled-button': pagination.page <= 0 || lockButtons}"><</button>
+        <button style="float: left; margin-left: 4px" v-on:click="prevPage" :disabled="pagination.page <= 0 || lockButtons" :class="{ 'disabled-button': pagination.page <= 0 || lockButtons}">{{ $t('prev') }}</button>
+
+        <div style="display: inline;text-align: center">
+          {{ pagination.page + 1 }} / {{ pagination.totalPages + 1}}
+        </div>
+
+        <button v-on:click="lastPage" :class="{ 'disabled-button': pagination.page >= pagination.totalPages || lockButtons}" :disabled="pagination.page >= pagination.totalPages  || lockButtons" style="float: right">></button>
+        <button v-on:click="nextPage" :class="{ 'disabled-button': pagination.page >= pagination.totalPages || lockButtons}" :disabled="pagination.page >= pagination.totalPages || lockButtons" style="float: right;margin-right: 4px">{{ $t('next') }}</button>
+      </div>
+
     </div>
     <Popup
       :title="popup.title"
@@ -64,7 +78,7 @@
 <script>
     import Popup from "./../utils/Popup";
     import {getAllShips} from "../../api/ships";
-    import {getShipCrewmates, isCaptain} from "../../api/crewmates";
+    import {deleteCrewmate, getShipCrewmates, isCaptain} from "../../api/crewmates";
 
     export default {
         name: "CrewPage",
@@ -73,7 +87,13 @@
             return {
                 ships: [],
                 currentShip: 0,
-                crew: [],
+                lockButtons: false,
+                crew: null,
+                pagination: {
+                    itemsPerPage: 5,
+                    page: 0,
+                    totalPages: 0,
+                },
                 popup: {
                     mate: '',
                     title: '',
@@ -84,24 +104,73 @@
         },
         mounted() {
             this.popup.description = this.$t('crewPage.popupRemove.description');
+            this.currentShip = this.$store.state.user.ship.id;
 
             getAllShips().then((res) => {
                 this.ships = res.data.data;
                 this.currentShip = this.$store.state.user.ship.id;
             });
 
-            getShipCrewmates(this.$store.state.user.ship.id).then((res) => {
-                this.crew = res.data.data
-            })
+            getShipCrewmates(this.currentShip, this.pagination.page, this.pagination.itemsPerPage).then((res) => {
+                this.crew = res.data.data;
+                this.pagination.totalPages = res.data.meta.totalPages;
+            });
         },
         methods: {
+            firstPage() {
+                this.lockButtons = true;
+                this.pagination.page = 0;
+                this.crew = [];
+                getShipCrewmates(this.currentShip, this.pagination.page, this.pagination.itemsPerPage).then((res) => {
+                    this.crew = res.data.data;
+                    this.pagination.totalPages = res.data.meta.totalPages;
+                }).finally(() => {
+                    this.lockButtons = false;
+                });
+            },
+            lastPage() {
+                this.lockButtons = true;
+                this.pagination.page = this.pagination.totalPages;
+                this.crew = [];
+                getShipCrewmates(this.currentShip, this.pagination.page, this.pagination.itemsPerPage).then((res) => {
+                    this.crew = res.data.data;
+                    this.pagination.totalPages = res.data.meta.totalPages;
+                }).finally(() => {
+                    this.lockButtons = false;
+                });
+            },
+            prevPage() {
+                this.lockButtons = true;
+                this.pagination.page--;
+                this.crew = [];
+                getShipCrewmates(this.currentShip, this.pagination.page, this.pagination.itemsPerPage).then((res) => {
+                    this.crew = res.data.data;
+                    this.pagination.totalPages = res.data.meta.totalPages;
+                }).finally(() => {
+                    this.lockButtons = false;
+                });
+            },
+            nextPage() {
+                this.lockButtons = true;
+                this.pagination.page++;
+                this.crew = [];
+                getShipCrewmates(this.currentShip, this.pagination.page, this.pagination.itemsPerPage).then((res) => {
+                    this.crew = res.data.data;
+                    this.pagination.totalPages = res.data.meta.totalPages;
+                }).finally(() => {
+                    this.lockButtons = false;
+                });
+            },
             showButtons() {
                 return isCaptain();
             },
             reloadList() {
-                getShipCrewmates(this.currentShip).then((res) => {
-                    this.crew = res.data.data
-                })
+                this.pagination.page = 0;
+                this.crew = [];
+                getShipCrewmates(this.currentShip, this.pagination.page, this.pagination.itemsPerPage).then((res) => {
+                    this.crew = res.data.data;
+                    this.pagination.totalPages = res.data.meta.totalPages;
+                });
             },
             showPopup(mate) {
               this.popup.title = this.$t("crewPage.popupRemove.title", [mate.name + " " + mate.lastName]);
@@ -109,11 +178,20 @@
               this.popup.mate = mate;
             },
             popupCancel() {
-               console.log(this.popup.mate)
                 this.popup.display = false;
             },
             popupConfirm() {
-                console.log(this.popup.mate)
+                deleteCrewmate(this.popup.mate.id)
+                    .then(() => {
+                        this.pagination.page = 0;
+                        getShipCrewmates(this.currentShip, this.pagination.page, this.pagination.itemsPerPage).then((res) => {
+                            this.crew = res.data.data;
+                            this.pagination.totalPages = res.data.meta.totalPages;
+                        });
+                    })
+                    .finally(() => {
+                        this.popup.display = false;
+                    })
             },
             detailsRedirect(id) {
                 this.$router.push({ name: 'crewDetails', params: { id: id } })
