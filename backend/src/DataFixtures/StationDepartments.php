@@ -24,8 +24,8 @@ class StationDepartments extends Fixture
 
         for ($i = 0; $i < 10; $i++) {
             $ship = new ShipEntity();
-            $ship->setEngines(100);
-            $ship->setHull(100);
+            $ship->setEngines($faker->numberBetween(10,100));
+            $ship->setHull($faker->numberBetween(10,100));
             $ship->setName($faker->company);
 
             $ships[] = $ship;

@@ -174,6 +174,8 @@ export default {
 
   next: "Dalej",
   prev: "Wstecz",
+  engines: "Silniki",
+  hull: "Kadłub",
 
   editCrew: {
     assign: 'Przypisz',
