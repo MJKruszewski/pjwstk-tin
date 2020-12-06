@@ -282,6 +282,24 @@ class Crewmate implements \JsonSerializable
      */
     public function jsonSerialize()
     {
+        $filteredRoles = array_filter($this->getCrewmateStations()->toArray(), function (CrewmateStations $crewmateStations) {
+            if ($crewmateStations->getDateTo() === null) {
+                return true;
+            }
+
+            if ($crewmateStations->getDateTo() >= new \DateTime()) {
+                return true;
+            }
+
+            return false;
+        });
+
+        $codes = [];
+
+        foreach ($filteredRoles as $roles) {
+            $codes[] = $roles->getStation()->getCode();
+        }
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -292,19 +310,7 @@ class Crewmate implements \JsonSerializable
             'tasks' => array_filter($this->tasks->getValues() ?? [], function (Task $task) {
                     return $task->getStatus() !== Task::STATUS_DONE;
                 }) ?? [],
-            'roles' => array_map(function (CrewmateStations $crewmateStations) {
-                return $crewmateStations->getStation()->getCode();
-            }, array_filter($this->getCrewmateStations()->toArray(), function (CrewmateStations $crewmateStations) {
-                if ($crewmateStations->getDateTo() === null) {
-                    return true;
-                }
-
-                if ($crewmateStations->getDateTo() > new \DateTime()) {
-                    return true;
-                }
-
-                return false;
-            })),
+            'roles' => $codes,
             'ship' => $this->shipCrewmates->first() ?? [],
             'createdAt' => $this->createdAt,
             'mainDepartment' => $this->mainDepartment,

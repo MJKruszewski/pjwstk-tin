@@ -55,7 +55,15 @@ export function isCaptain() {
 
 export function isRolePresent(role) {
   if (Array.isArray(role)) {
-    return localStore.state.user.roles.includes(...role);
+    let includes = false;
+
+    Array.from(role).forEach((item) => {
+      if (!includes) {
+        includes = localStore.state.user.roles.includes(item);
+      }
+    });
+
+    return includes;
   }
 
   return localStore.state.user.roles.includes(role);
