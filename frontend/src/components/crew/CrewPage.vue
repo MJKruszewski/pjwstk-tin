@@ -23,7 +23,6 @@
         <tr>
           <th>{{ $t('crewPage.crewName') }}</th>
           <th>{{ $t('crewPage.crewDepartment') }}</th>
-          <th>{{ $t('crewPage.crewTasks') }}</th>
           <th>{{ $t('crewPage.crewActions') }}</th>
         </tr>
         </thead>
@@ -33,14 +32,12 @@
             <td>Loading ...</td>
             <td></td>
             <td></td>
-            <td></td>
           </tr>
 
           <template v-for="mate,key in crew">
             <tr :key="key">
               <td>{{ mate.name }} {{ mate.lastName }}</td>
               <td>{{ $t("departments." + mate.mainDepartment.code) }}</td>
-              <td>todo</td>
               <td>
                 <button class="info" v-on:click="detailsRedirect(mate.id)">{{ $t('crewPage.details') }}</button>
                 <button class="warning" v-if="showButtons()" v-on:click="editRedirect(mate.id)">{{ $t('crewPage.edit') }}</button>
