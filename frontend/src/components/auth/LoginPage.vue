@@ -9,11 +9,11 @@
             <div class="col-12" style="text-align: center">
               <label for="login" style="font-weight: bold;">Login:</label>
               <br/>
-              <input v-model="username" type="text" id="login" placeholder="username" :class="{ 'validation-error': $v.username.$error }">
+              <input v-model="username" type="text" id="login" placeholder="username" :class="{ 'validation-error': $v.username.$error || isError }">
               <br/>
               <label for="password" style="font-weight: bold">Password:</label>
               <br/>
-              <input v-model="password" type="password" id="password" placeholder="password" :class="{ 'validation-error': $v.password.$error }">
+              <input v-model="password" type="password" id="password" placeholder="password" :class="{ 'validation-error': $v.password.$error || isError }">
             </div>
 
           </form>
@@ -38,6 +38,7 @@
         components: {BackgroundImage},
         data: () => {
             return {
+                isError: false,
                 username: null,
                 password: null,
             }
@@ -52,6 +53,7 @@
         },
         methods: {
             login() {
+                this.isError = false;
                 this.$v.$touch();
 
                 if (this.$v.$invalid) {
@@ -66,6 +68,8 @@
                     })
 
                     this.$router.push({name: 'summary'})
+                }).catch(res => {
+                    this.isError = true;
                 });
             }
         }
